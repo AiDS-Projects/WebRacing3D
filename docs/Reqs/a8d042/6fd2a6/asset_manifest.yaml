@@ -1,19 +1,19 @@
 # asset_manifest.yaml — 实现基础车辆物理系统
-# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
-# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+# 由 ArtistAgent 落地更新
+# status: sourced=命中资产库 / placeholder=占位图待替换 / manual_required=需人工提供 / not_found=未命中
 assets:
   - id: engine_loop
     type: audio
     description: 引擎轰鸣循环音效，音调/音量随车速实时变化
-    source_hint: kenney
-    status: pending
+    status: manual_required
+    note: audio 类资产需人工提供或接入对应素材源
   - id: collision_boundary
     type: audio
     description: 边界碰撞短音效，用于碰撞减速反馈
-    source_hint: kenney
-    status: pending
+    status: manual_required
+    note: audio 类资产需人工提供或接入对应素材源
   - id: drift_skid
     type: audio
     description: 高速打滑轮胎摩擦声，音量随抓地力降低而增强（可选）
-    source_hint: kenney
-    status: pending
+    status: manual_required
+    note: audio 类资产需人工提供或接入对应素材源
