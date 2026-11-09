@@ -1,0 +1,39 @@
+# asset_manifest.yaml — 实现计时与圈数系统
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: icon: flag-checkered（起终点线标识，24px，outline 风格，用于横幅/提示）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: icon: restart（重新开始按钮辅助图标，20px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: icon: timer（计时器辅助图标，HUD 计时区，20px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: icon: speedometer（速度表辅助图标，HUD 速度区，20px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: photo
+    description: image: start-finish-line-texture（起终点地面标线贴图，黑白格，512x512 平铺）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: photo
+    description: image: start-finish-banner（起终点上方横幅，可选，750x200）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: photo
+    description: image: result-panel-bg（结算面板背景底图，可选，600x400）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: audio: finish-line-sfx（冲线提示音，短促约 0.5s，1 条）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: illustration
+    description: illustration: 无（本工单无空状态/错误态插画需求）
+    status: pending  # 待美术Agent确认来源和规格
