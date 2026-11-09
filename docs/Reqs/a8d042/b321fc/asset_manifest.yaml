@@ -1,54 +1,59 @@
 # asset_manifest.yaml — 实现计时与圈数系统
-# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
-# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+# 由 ArtistAgent 落地更新
+# status: sourced=命中资产库 / placeholder=占位图待替换 / manual_required=需人工提供 / not_found=未命中
 assets:
   - id: icon_restart
     type: icon
     description: 重新开始按钮图标 20px outline 圆环箭头
-    source_hint: iconify
-    status: pending
+    status: sourced
+    path: icons/lucide/list-restart.svg
+    matched_name: list-restart
+    asset_db_id: AST-000952
+    match_score: 0.7
   - id: icon_flag
     type: icon
     description: 旗标图标 20px outline 用于状态/结算标题
-    source_hint: iconify
-    status: pending
+    status: sourced
+    path: icons/lucide/flag.svg
+    matched_name: flag
+    asset_db_id: AST-000685
+    match_score: 1.0
   - id: icon_clock
     type: icon
     description: 时钟图标 20px outline 计时器标识
-    source_hint: iconify
-    status: pending
+    status: sourced
+    path: icons/lucide/clock.svg
+    matched_name: clock
+    asset_db_id: AST-000426
+    match_score: 1.0
   - id: icon_speed
     type: icon
     description: 速度表图标 18px outline 速度标签
-    source_hint: iconify
-    status: pending
+    status: sourced
+    path: icons/tabler/brand-speedtest.svg
+    matched_name: brand-speedtest
+    asset_db_id: AST-002844
+    match_score: 0.7
   - id: icon_lap
     type: icon
     description: 圈数图标 18px outline 环形箭头
-    source_hint: iconify
-    status: pending
-  - id: tex_checker_finish
-    type: texture
-    description: 起终点线黑白棋盘格贴图 512x64 无缝平铺 2行8列
-    source_hint: ai_generate
-    status: pending
-  - id: tex_hud_panel_bg
-    type: texture
-    description: HUD 面板半透明深色底衬 1x1 纯色带圆角遮罩
-    source_hint: ai_generate
-    status: pending
+    status: sourced
+    path: icons/lucide/clapperboard.svg
+    matched_name: clapperboard
+    asset_db_id: AST-000413
+    match_score: 0.7
   - id: snd_lap_start
     type: audio
     description: 计时开始提示音（短促上扬 beep）
-    source_hint: kenney
-    status: pending
+    status: manual_required
+    note: audio 类资产需人工提供或接入对应素材源
   - id: snd_lap_complete
     type: audio
     description: 单圈完成结算音效（两段上扬成功音）
-    source_hint: kenney
-    status: pending
+    status: manual_required
+    note: audio 类资产需人工提供或接入对应素材源
   - id: snd_restart
     type: audio
     description: 重新开始按钮点击音效
-    source_hint: kenney
-    status: pending
+    status: manual_required
+    note: audio 类资产需人工提供或接入对应素材源
