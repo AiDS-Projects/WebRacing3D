@@ -1,0 +1,35 @@
+# asset_manifest.yaml — 实现基础车辆物理系统
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: 本工单为纯代码物理逻辑，无必需美术资产。以下为可选/预留资产（供后续 HUD 工单使用）：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: icon: speedometer（速度仪表，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: icon: drift（打滑/侧滑指示，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: icon: reverse（倒车标识，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: icon: collision-warning（碰撞警示，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: icon: debug（调试面板开关，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: illustration
+    description: illustration: 无（本工单无空状态/列表场景）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: photo
+    description: image: 无（本工单无页面级横幅/背景）
+    status: pending  # 待美术Agent确认来源和规格
