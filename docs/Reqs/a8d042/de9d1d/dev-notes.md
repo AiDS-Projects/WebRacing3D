@@ -1,76 +1,147 @@
 # 开发笔记 — 实现玩家赛车与第三人称跟随视角
 
-> 2026-11-10 01:08 | LLM
+> 2026-11-10 01:23 | LLM
 
 ## 产出文件
-- [src/types/input.ts](/app#repo?file=src/types/input.ts) (2196 chars)
+- [src/index.ts](/app#repo?file=src/index.ts) (228 chars)
+- [src/main.ts](/app#repo?file=src/main.ts) (10500 chars)
 - [src/camera/FollowCamera.ts](/app#repo?file=src/camera/FollowCamera.ts) (2757 chars)
 
 ## 自测: 自测 7/7 通过 ✅
 
 | 检查项 | 结果 | 说明 |
 |--------|------|------|
-| 文件产出 | ✅ | 2 个文件 |
+| 文件产出 | ✅ | 3 个文件 |
 | 入口文件 | ✅ | 存在 |
 | 代码非空 | ✅ | 通过 |
 | 语法检查 | ✅ | 通过 |
 | 文件名规范 | ✅ | 全英文 |
-| 磁盘落地 | ✅ | 2 个文件已落盘 |
+| 磁盘落地 | ✅ | 3 个文件已落盘 |
 | 页面截图 | ✅ | 1 张截图 |
 
 ## 代码变更 (Diff)
 
-### src/types/input.ts (新建, 2196 chars)
-```
-+ /**
-+  * 输入系统类型定义
-+  * 覆盖键盘（W/S/A/D + 方向键）与触屏虚拟按键两类输入源，
-+  * 并定义合成后的车辆控制输入（供物理/移动模块消费）。
-+  */
-+ 
-+ /** 车辆控制动作 */
-+ export type CarAction =
-+   | 'throttle' // 油门
-+   | 'brake' // 刹车
-+   | 'steerLeft' // 左转
-+   | 'steerRight' // 右转
-+   | 'handbrake' // 手刹
-+   | 'reset'; // 复位
-+ 
-+ /** 支持的键盘按键 */
-+ export type KeyCode =
-+   | 'KeyW'
-+   | 'KeyA'
-+   | 'KeyS'
-+ ... (更多)
+### src/index.ts (修改)
+```diff
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -2,4 +2,6 @@
+ export * from './types/scene';
+
+ export * from './types/track';
+
+ export * from './track/TrackBuilder';
+
+-export * from './utils/math';
++export * from './utils/math';
+
++export * from './player/PlayerCar';
+
++export * from './camera/FollowCamera';
 ```
 
-### src/camera/FollowCamera.ts (新建, 2757 chars)
+### src/main.ts (修改)
+```diff
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -1,5 +1,4 @@
+ import * as THREE from 'three';
+
+-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+ 
+
+ /* ============================================================================
+
+  * 类型定义层
+
+@@ -28,6 +27,14 @@
+   width: number;
+
+   height: number;
+
+   aspect: number;
+
++}
+
++
+
++/** 键盘输入状态 */
+
++interface KeyState {
+
++  forward: boolean;
+
++  backward: boolean;
+
++  left: boolean;
+
++  right: boolean;
+
+ }
+
+ 
+
+ /* ============================================================================
+
+@@ -44,6 +51,22 @@
+   },
+
+ };
+
+ 
+
++/** 赛车物理参数 */
+
++const CAR_CONFIG = {
+
++  acceleration: 12,
+
++  maxSpeed: 20,
+
++  reverseMaxSpeed: 8,
+
++  friction: 6,
+
++  turnSpeed: 2.2,
+
++};
+
++
+
++/** 第三人称跟随相机参数 */
+
++const FOLLOW_CONFIG = {
+
++  distance: 6.5,
+
++  height: 2.8,
+
++  lerpSpeed: 6,
+
++};
+
++
+
+ function getSize(container: HTMLElement): SceneSize {
+
+   const width = container.clientWidth || window.innerWidth;
+
+   const height = container.clientHeight || window.innerHeight;
+
+@@ -117,6 +140,56 @@
+   return group;
+
+ }
+
+ 
+
+... (共 247 行变更)
 ```
-+ import * as THREE from 'three';
-+ 
-+ // ============================================================================
-+ // 类型定义层
-+ // ============================================================================
-+ 
-+ /** 第三人称跟随相机配置 */
-+ export interface FollowCameraConfig {
-+   /** 相机相对目标的偏移（目标局部空间，会随目标旋转） */
-+   offset?: THREE.Vector3;
-+   /** 观察点相对目标的偏移（目标局部空间） */
-+   lookAtOffset?: THREE.Vector3;
-+   /** 位置平滑系数（指数衰减，越大越跟手，默认 6） */
-+   positionLerp?: number;
-+   /** 是否启用平滑跟随，false 则每帧硬性贴合，默认 true */
-+   smooth?: boolean;
-+ }
-+ 
-+ // ============================================================================
-+ // 共享工具层
-+ ... (更多)
-```
+
+### src/camera/FollowCamera.ts (无变化)
 
 ## 页面预览截图
 
-![开发自测 — 实现玩家赛车与第三人称跟随视角](screenshots/dev_1794244117.png)
+![开发自测 — 实现玩家赛车与第三人称跟随视角](screenshots/dev_1794245013.png)
 
