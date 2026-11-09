@@ -1,0 +1,44 @@
+{
+  "colors": {
+    "accelerate": "#22C55E",
+    "brake": "#EF4444",
+    "steer": "#3B82F6",
+    "surface": "rgba(255,255,255,0.14)",
+    "surface_pressed": "rgba(255,255,255,0.30)",
+    "border": "rgba(255,255,255,0.35)",
+    "icon": "#FFFFFF",
+    "hud_bg": "rgba(0,0,0,0.0)",
+    "status_bg": "rgba(0,0,0,0.35)",
+    "status_text": "#FFFFFF",
+    "car_body": "#E85D3A",
+    "car_cockpit": "#374151",
+    "car_wheel": "#111827",
+    "car_rim": "#9CA3AF",
+    "ground": "#1F2937"
+  },
+  "typography": {
+    "base": "14px",
+    "sm": "12px",
+    "lg": "16px",
+    "button_label": "13px"
+  },
+  "spacing": {
+    "xs": "4px",
+    "sm": "8px",
+    "md": "16px",
+    "lg": "24px",
+    "xl": "32px",
+    "button_gap": "12px",
+    "hud_margin": "20px"
+  },
+  "radius": {
+    "sm": "8px",
+    "md": "16px",
+    "lg": "24px",
+    "circle": "50%"
+  },
+  "shadow": {
+    "button": "0 2px 8px rgba(0,0,0,0.45)",
+    "button_pressed": "0 1px 3px rgba(0,0,0,0.55)"
+  }
+}

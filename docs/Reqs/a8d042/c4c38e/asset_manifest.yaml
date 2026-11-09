@@ -1,0 +1,40 @@
+# asset_manifest.yaml — 构建 3D 环形赛道场景
+# 由 ArtistAgent 落地更新
+# status: sourced=命中资产库 / placeholder=占位图待替换 / manual_required=需人工提供 / not_found=未命中
+assets:
+  - id: camera_view
+    type: icon
+    description: 相机视角切换图标 24px outline 风格
+    status: sourced
+    path: icons/lucide/camera.svg
+    matched_name: camera
+    asset_db_id: AST-000286
+    match_score: 0.85
+  - id: collapse
+    type: icon
+    description: 抽屉折叠箭头图标 20px outline 风格
+    status: sourced
+    path: icons/lucide/list-collapse.svg
+    matched_name: list-collapse
+    asset_db_id: AST-000942
+    match_score: 0.7
+  - id: debug_panel
+    type: icon
+    description: 调试面板开关图标 24px outline 风格
+    status: placeholder
+    path: docs/Reqs/a8d042/c4c38e/assets/placeholder/debug_panel.png
+  - id: retry
+    type: icon
+    description: 重试/重新生成图标 24px outline 风格
+    status: placeholder
+    path: docs/Reqs/a8d042/c4c38e/assets/placeholder/retry.png
+  - id: error_warning
+    type: icon
+    description: 错误提示图标 48px outline 风格
+    status: placeholder
+    path: docs/Reqs/a8d042/c4c38e/assets/placeholder/error_warning.png
+  - id: ui_click
+    type: audio
+    description: 按钮点击音效（原型可选）
+    status: manual_required
+    note: audio 类资产需人工提供或接入对应素材源
