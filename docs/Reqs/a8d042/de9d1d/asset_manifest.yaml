@@ -1,24 +1,24 @@
 # asset_manifest.yaml — 实现玩家赛车与第三人称跟随视角
-# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
-# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+# 由 ArtistAgent 落地更新
+# status: sourced=命中资产库 / placeholder=占位图待替换 / manual_required=需人工提供 / not_found=未命中
 assets:
   - id: btn_accelerate
     type: icon
     description: 加速按键图标 向上箭头 24px outline
-    source_hint: iconify
-    status: pending
+    status: placeholder
+    path: docs/Reqs/a8d042/de9d1d/assets/placeholder/btn_accelerate.png
   - id: btn_brake
     type: icon
     description: 刹车/倒车按键图标 向下箭头 24px outline
-    source_hint: iconify
-    status: pending
+    status: placeholder
+    path: docs/Reqs/a8d042/de9d1d/assets/placeholder/btn_brake.png
   - id: btn_steer_left
     type: icon
     description: 左转按键图标 向左箭头 24px outline
-    source_hint: iconify
-    status: pending
+    status: placeholder
+    path: docs/Reqs/a8d042/de9d1d/assets/placeholder/btn_steer_left.png
   - id: btn_steer_right
     type: icon
     description: 右转按键图标 向右箭头 24px outline
-    source_hint: iconify
-    status: pending
+    status: placeholder
+    path: docs/Reqs/a8d042/de9d1d/assets/placeholder/btn_steer_right.png
