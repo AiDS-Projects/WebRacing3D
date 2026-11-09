@@ -1,0 +1,51 @@
+{
+  "colors": {
+    "primary": "#00D9FF",
+    "primary_hover": "#33E0FF",
+    "primary_active": "#00B8D9",
+    "accent": "#FF3B30",
+    "bg_overlay": "rgba(10, 12, 16, 0.60)",
+    "panel_bg": "rgba(22, 26, 32, 0.92)",
+    "panel_border": "#2A3038",
+    "text": "#E8ECF1",
+    "text_muted": "#9AA3AF",
+    "text_disabled": "#5A6270",
+    "success": "#34D399",
+    "error": "#FF5A5F",
+    "warning": "#FBBF24",
+    "scene_road": "#3A3F47",
+    "scene_road_edge": "#FFFFFF",
+    "scene_curb_red": "#E53935",
+    "scene_curb_white": "#F5F5F5",
+    "scene_guardrail": "#8C929B",
+    "scene_grass": "#3E7C3A",
+    "scene_start_line": "#16181C"
+  },
+  "typography": {
+    "base": "14px",
+    "sm": "12px",
+    "lg": "16px",
+    "heading": "20px",
+    "mono": "13px",
+    "family_sans": "'Inter', 'Segoe UI', system-ui, sans-serif",
+    "family_mono": "'JetBrains Mono', 'Consolas', monospace"
+  },
+  "spacing": {
+    "xs": "4px",
+    "sm": "8px",
+    "md": "16px",
+    "lg": "24px",
+    "xl": "32px"
+  },
+  "radius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "pill": "999px"
+  },
+  "shadow": {
+    "panel": "0 8px 24px rgba(0, 0, 0, 0.45)",
+    "button": "0 2px 8px rgba(0, 0, 0, 0.30)",
+    "glow": "0 0 12px rgba(0, 217, 255, 0.50)"
+  }
+}
