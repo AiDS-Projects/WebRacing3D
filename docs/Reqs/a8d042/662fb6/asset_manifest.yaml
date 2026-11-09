@@ -1,39 +1,4 @@
 # asset_manifest.yaml — 实现基础游戏 UI
-# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
 assets:
-  - id: asset_001
-    type: icon
-    description: icon: start-play（开始按钮图标，24px，outline 风格，可用 CSS/矢量实现）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_002
-    type: icon
-    description: icon: restart（重新开始按钮图标，24px，outline 风格，可用 CSS/矢量实现）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_003
-    type: icon
-    description: icon: steer-left（左转虚拟按键，48px，outline 风格）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_004
-    type: icon
-    description: icon: steer-right（右转虚拟按键，48px，outline 风格）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_005
-    type: icon
-    description: icon: throttle（加速虚拟按键，48px，filled 风格）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_006
-    type: icon
-    description: icon: brake（刹车虚拟按键，48px，filled 风格）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_007
-    type: illustration
-    description: illustration: 无（本工单不需要插画，开始/结算界面以文字 + 按钮为主）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_008
-    type: photo
-    description: image: 无（HUD 与界面全部用 CSS/DOM 元素绘制，避免额外纹理加载）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_009
-    type: icon
-    description: font: 数字等宽字体（monospace 或系统 tabular-nums，用于速度表/计时器数字，防止抖动）
-    status: pending  # 待美术Agent确认来源和规格
