@@ -1,0 +1,39 @@
+# asset_manifest.yaml — 构建 3D 环形赛道场景
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: icon: camera-view（相机视角切换，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: icon: debug-panel（调试面板开关，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: icon: retry（重试/重新生成，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: icon: check（自检通过标识，16px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: icon: warning（自检失败/错误标识，16px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: icon: menu（移动端折叠菜单，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: illustration
+    description: illustration: empty-state（WebGL 不可用/场景未渲染空状态，400x300）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: illustration
+    description: illustration: error-state（场景初始化失败错误状态，400x300）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: photo
+    description: image: 无（本工单全部程序化几何体与占位材质，无需贴图/横幅图片）
+    status: pending  # 待美术Agent确认来源和规格
