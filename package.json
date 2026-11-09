@@ -1,20 +1,21 @@
 {
-  "name": "vite-ts-threejs-scaffold",
-  "version": "0.1.0",
+  "name": "threejs-scaffold",
   "private": true,
+  "version": "0.1.0",
   "type": "module",
-  "description": "Vite + TypeScript + Three.js 项目骨架，建立目录结构、类型定义与共享工具层",
+  "description": "初始化项目脚手架与技术栈 — Vite + TypeScript + Three.js 项目骨架",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "three": "^0.160.0"
+    "three": "^0.169.0"
   },
   "devDependencies": {
-    "@types/three": "^0.160.0",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.11"
+    "@types/three": "^0.169.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.8"
   }
 }
