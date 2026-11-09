@@ -1,26 +1,28 @@
 # 代码审查 — 实现玩家赛车与第三人称跟随视角
 
-## 评分: 5/10 🚫 需修复
+## 评分: 4/10 🚫 需修复
 
 ## 🔴 严重问题（必须修复）
-- FollowCamera.ts: 模块级 DEFAULT_CONFIG 中的 offset/lookAtOffset 是可变 Vector3 单例，构造器用浅拷贝 { ...DEFAULT_CONFIG, ...config } 合并，未传 offset 的多个实例会共享同一个 Vector3。调用 setOffset() 会 copy 到这个共享对象上，导致一个相机实例的偏移污染其它实例（跨实例状态串扰，属逻辑错误/状态破坏）。应改为构造时 clone 默认向量，例如 offset: DEFAULT_CONFIG.offset.clone()。
+- index.ts 引用了不存在的模块路径：`./player/PlayerCar` 与 `./track/TrackBuilder`。实际实现中玩家赛车是内联在 main.ts 的 `createPlayerCar()` 函数里，赛道文件是 `track/Track.ts`，并不存在 `player/PlayerCar.ts` 和 `track/TrackBuilder.ts`，导致构建/导入阶段直接报错（模块解析失败）。
+- FollowCamera 的默认配置存在共享可变对象缺陷：`DEFAULT_CONFIG` 中的 `offset`、`lookAtOffset` 是模块级单例 Vector3，构造函数 `{ ...DEFAULT_CONFIG, ...config }` 是浅拷贝，多个实例会共享同一个 Vector3 引用。`setOffset()` 内部执行 `this.config.offset.copy(offset)` 会原地修改共享的 DEFAULT_CONFIG，污染之后创建的所有 FollowCamera 实例（跨实例状态串扰，属隐藏 bug）。
 
 ## 🟡 警告（建议修复）
-- FollowCamera.ts: updatePosition/updateLookAt 使用 target.quaternion（局部四元数）而非 target.getWorldQuaternion()。当目标被挂载在旋转过的父节点下时偏移计算错误；且当车辆在坡道俯仰/倾斜弯道侧倾时，相机偏移会随车体 roll/pitch 一起旋转，导致地平线倾斜、观感异常。至少应对偏航单独处理或改用世界四元数并分离 roll/pitch 分量。
-- FollowCamera.ts: 位置使用平滑(指数衰减)，但 updateLookAt() 每帧硬性 lookAt，观察方向无平滑。车辆急转时位置滞后而视线瞬时跳变，会产生旋转抖动/断裂感。lookAt 目标点同样应做平滑，或对相机朝向做平滑插值。
-- FollowCamera.ts: updatePosition 与 updateLookAt 每帧各自 clone() 一个 Vector3（desired/lookAt），在每帧热路径产生持续 GC 分配，影响性能。应缓存为类私有字段复用，避免每帧 new。
-- src/index.ts 未导出新增的 ./types/input 与 ./camera/FollowCamera，新模块无法被外部/其余模块引用，接口未对消费者开放。
-- types/input.ts: VirtualButtonLayout 定义了 left/right/throttle/brake/handbrake，但缺少 reset 按钮，而 CarAction 中存在 'reset'，导致触屏用户无法触发复位操作，输入能力不完整。
-- types/input.ts: CarInput.steer 由 steerLeft/steerRight 合成，但类型层未定义归一化/合成逻辑的契约，合成实现（输入归一化、刹车与油门同时按下时的优先级）无类型约束，容易出现各模块实现不一致。
+- main.ts 中定义的 `FOLLOW_CONFIG`（distance 6.5、height 2.8）是死代码：从未被使用。实际相机偏移由 FollowCamera 自带默认值 offset(0, 5.5, -10) 决定，与 FOLLOW_CONFIG 数值完全不一致，存在配置漂移/重复定义，易误导后续维护者。
+- App 类没有 dispose() 生命周期方法：requestAnimationFrame 未取消（rafId 只存未清）、keydown/keyup/resize 监听器（onKeyDown/onKeyUp/onResize）从未移除。组件卸载或重复创建 App 时会造成事件监听泄漏与 RAF 泄漏。
+- delta time 未做钳制：使用 clock.getDelta() 时，浏览器标签页切后台再返回会得到极大的 dt，导致物理位移/相机跟随瞬间跳变甚至穿越赛道（tunneling），应限制如 Math.min(dt, 0.05)。
+- getSize() 用 `container.clientWidth || window.innerWidth` 兜底：当容器隐藏（display:none）时 clientWidth 为 0，会混用窗口尺寸，导致相机 aspect 与 renderer 实际尺寸不一致；且 height 为 0 时 aspect 会退化为 NaN/Infinity 未被防护。
+- createDemoContent() 把演示内容（地面、网格、立方体、坐标轴 AxesHelper）硬编码进生产 App 入口，演示代码与业务逻辑未分离，正式场景应移除或抽离。
+- createPlayerCar / createDemoContent 中创建的 Geometry 与 Material 均未调用 dispose()，renderer 也未提供释放入口，多次创建 App 会导致 WebGL 资源（显存）无法回收。
 
 ## 🟢 建议（可选优化）
-- FollowCamera.ts: 字段名 positionLerp 与实际语义不符（实际是指数平滑速率，非 lerp 系数），建议更名为 positionSmoothRate 或 smoothingFactor 以避免误导。
-- types/input.ts: VirtualButton.holdable 的注释只说明「油门/转向为 true，手刹/复位为 false」，未说明 brake 的取值，注释与类型不完整，应补全。
-- FollowCamera.ts: 建议增加对 config.offset / lookAtOffset 零长度向量的校验，避免 offset 为零向量时相机与目标重合导致 lookAt 结果未定义（NaN/视锥异常）。
-- FollowCamera.ts: 建议将 DEFAULT_CONFIG 的默认向量改用工厂函数 createDefaultConfig() 生成，从根源上避免可变单例被共享的问题，而非仅在构造器 clone。
-- FollowCamera.ts: snap() 内部调用 updatePosition(target, 1) 通过传 t=1 隐式表达「硬贴合」，语义不够清晰，建议拆出独立的硬贴合路径（如直接计算 desired 并 copy），避免依赖魔法值 1。
+- FollowCamera 每帧在 updatePosition/updateLookAt 中调用 `offset.clone()`、`lookAtOffset.clone()`，产生大量临时对象，高频调用下带来 GC 压力；建议在类中预分配临时 Vector3 复用（如 _tmpOffset、_tmpLookAt）。
+- createPlayerCar() 中车身/座舱/车轮的尺寸与位置（0.55、1.0、-0.2、0.32、1.15 等）均为魔法数字，建议提取为命名常量，提升可读性与可调性。
+- Track.ts 的 buildFlatRibbon 用数组 push 动态构建 positions/normals/indices，可预先按 segments 计算数组长度并一次性分配，减少扩容开销。
+- FollowCamera 默认配置建议改为工厂函数或深拷贝（offset/lookAtOffset 用 clone），从根上消除共享可变单例；同时可补充 reset()/销毁语义。
+- index.ts 的桶文件同时 re-export 内部类型（types/scene、types/track）与公共 API，建议区分对外 API 与内部类型导出，避免 tree-shaking 边界不清。
 
 ## 审查的代码
-- src/types/input.ts
+- src/index.ts
+- src/main.ts
 - src/camera/FollowCamera.ts
 - docs/Reqs/a8d042/de9d1d/dev-notes.md
