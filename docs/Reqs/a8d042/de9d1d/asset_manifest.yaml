@@ -1,31 +1,24 @@
 # asset_manifest.yaml — 实现玩家赛车与第三人称跟随视角
-# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
 assets:
-  - id: asset_001
+  - id: btn_accelerate
     type: icon
-    description: icon: accelerate（触屏「加速」按键图标，车载油门/向上箭头语义，64px，filled 圆角风格，供主键使用，可放大至 96px）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_002
+    description: 加速按键图标 向上箭头 24px outline
+    source_hint: iconify
+    status: pending
+  - id: btn_brake
     type: icon
-    description: icon: brake（触屏「刹车/倒车」按键图标，向下/制动语义，64px，filled 圆角风格）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_003
+    description: 刹车/倒车按键图标 向下箭头 24px outline
+    source_hint: iconify
+    status: pending
+  - id: btn_steer_left
     type: icon
-    description: icon: steer-left（触屏「左转」按键图标，向左箭头，64px，filled 圆角风格）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_004
+    description: 左转按键图标 向左箭头 24px outline
+    source_hint: iconify
+    status: pending
+  - id: btn_steer_right
     type: icon
-    description: icon: steer-right（触屏「右转」按键图标，向右箭头，64px，filled 圆角风格）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_005
-    type: illustration
-    description: illustration: 无需插画（本工单无空状态/错误态展示场景）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_006
-    type: photo
-    description: image: 无需静态图片（赛车为 3D 几何体实时渲染，无贴图需求）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_007
-    type: icon
-    description: 备注：4 个图标若暂无美术资源，可先用矢量文字符号（▲/▼/◀/▶ 或「油门/刹车/左/右」文字）占位，交互结构不变。
-    status: pending  # 待美术Agent确认来源和规格
+    description: 右转按键图标 向右箭头 24px outline
+    source_hint: iconify
+    status: pending
