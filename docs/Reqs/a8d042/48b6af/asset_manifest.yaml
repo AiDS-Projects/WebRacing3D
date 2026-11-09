@@ -1,0 +1,27 @@
+# asset_manifest.yaml — 初始化项目脚手架与技术栈
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: 本工单为脚手架搭建，PRD 边界条件明确排除美术资产导入，因此资产清单极简，仅保留开发/验证所需最小项：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: icon: refresh（ErrorOverlay 重试按钮图标，24px，outline 风格，用于 WebGL 初始化失败重试）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: icon: warning（ErrorOverlay 错误提示图标，24px，outline 风格，用于异常提示）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: illustration
+    description: illustration: 无（本工单无空状态/列表等场景）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: photo
+    description: image: 无（本工单无横幅、插画等需求）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: 说明：FPS 浮层、Loading 遮罩均为纯文本实现，无需图标/图片资源。上述两个 icon 可在无资源时用文本『重试』与符号『!』替代，避免本工单引入资产依赖。
+    status: pending  # 待美术Agent确认来源和规格
