@@ -1,0 +1,24 @@
+# asset_manifest.yaml — 初始化项目脚手架与技术栈
+# 由 ArtistAgent 落地更新
+# status: sourced=命中资产库 / placeholder=占位图待替换 / manual_required=需人工提供 / not_found=未命中
+assets:
+  - id: error_alert
+    type: icon
+    description: 错误提示警告图标 24px outline
+    status: placeholder
+    path: docs/Reqs/a8d042/48b6af/assets/placeholder/error_alert.png
+  - id: retry
+    type: icon
+    description: 重试按钮刷新图标 16px outline
+    status: placeholder
+    path: docs/Reqs/a8d042/48b6af/assets/placeholder/retry.png
+  - id: debug_fps
+    type: icon
+    description: FPS 调试面板指示图标 16px
+    status: placeholder
+    path: docs/Reqs/a8d042/48b6af/assets/placeholder/debug_fps.png
+  - id: mono_ui
+    type: font
+    description: HUD 等宽数字字体 JetBrains Mono
+    status: manual_required
+    note: font 类资产需人工提供或接入对应素材源

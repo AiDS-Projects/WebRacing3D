@@ -1,0 +1,44 @@
+{
+  "colors": {
+    "primary": "#00E5FF",
+    "primaryDim": "#00B8D4",
+    "accent": "#7C4DFF",
+    "bg": "#0A0E14",
+    "bgElevated": "#141A24",
+    "surface": "#1C2432",
+    "border": "#2A3444",
+    "text": "#E6EDF3",
+    "textMuted": "#8B98A9",
+    "success": "#00E676",
+    "warning": "#FFB300",
+    "error": "#FF5252",
+    "overlay": "rgba(10,14,20,0.72)"
+  },
+  "typography": {
+    "base": "14px",
+    "sm": "12px",
+    "xs": "11px",
+    "lg": "16px",
+    "heading": "20px",
+    "mono": "'JetBrains Mono','SFMono-Regular',Consolas,monospace",
+    "sans": "'Inter','Segoe UI',system-ui,sans-serif"
+  },
+  "spacing": {
+    "xs": "4px",
+    "sm": "8px",
+    "md": "16px",
+    "lg": "24px",
+    "xl": "32px"
+  },
+  "radius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "pill": "999px"
+  },
+  "shadow": {
+    "overlayCard": "0 8px 24px rgba(0,0,0,0.45)",
+    "neonGlow": "0 0 12px rgba(0,229,255,0.35)",
+    "debugBar": "0 2px 8px rgba(0,0,0,0.30)"
+  }
+}

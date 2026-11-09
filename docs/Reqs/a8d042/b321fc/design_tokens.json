@@ -1,0 +1,66 @@
+{
+  "colors": {
+    "primary": "#00E5FF",
+    "primary_glow": "rgba(0,229,255,0.45)",
+    "success": "#00FF88",
+    "success_glow": "rgba(0,255,136,0.40)",
+    "warning": "#FF5252",
+    "warning_glow": "rgba(255,82,82,0.40)",
+    "neutral": "#9BA8C0",
+    "text": "#FFFFFF",
+    "text_dim": "#C7D2E8",
+    "bg_hud": "rgba(8,12,20,0.66)",
+    "bg_panel": "rgba(10,16,28,0.88)",
+    "bg_backdrop": "rgba(2,4,8,0.60)",
+    "border": "rgba(255,255,255,0.12)",
+    "border_strong": "rgba(0,229,255,0.55)",
+    "checker_black": "#0A0A0A",
+    "checker_white": "#F5F5F5"
+  },
+  "typography": {
+    "family_display": "'Orbitron', 'DIN Condensed', 'Rajdhani', sans-serif",
+    "family_mono": "'JetBrains Mono', 'Roboto Mono', 'DIN Mono', monospace",
+    "base": "14px",
+    "sm": "12px",
+    "xs": "10px",
+    "lg": "18px",
+    "timer": "40px",
+    "speed": "32px",
+    "lap": "18px",
+    "panel_title": "24px",
+    "panel_laptime": "48px",
+    "letter_spacing_tight": "0.01em",
+    "letter_spacing_wide": "0.08em",
+    "tabular_nums": "font-variant-numeric: tabular-nums"
+  },
+  "spacing": {
+    "xs": "4px",
+    "sm": "8px",
+    "md": "16px",
+    "lg": "24px",
+    "xl": "32px",
+    "xxl": "48px",
+    "hud_gutter": "20px",
+    "panel_pad": "28px",
+    "icon_gap": "8px"
+  },
+  "radius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "pill": "999px",
+    "panel": "16px"
+  },
+  "shadow": {
+    "hud": "0 2px 12px rgba(0,0,0,0.45)",
+    "panel": "0 12px 40px rgba(0,0,0,0.60), 0 0 0 1px rgba(255,255,255,0.06)",
+    "glow_primary": "0 0 12px rgba(0,229,255,0.55)",
+    "glow_success": "0 0 16px rgba(0,255,136,0.50)",
+    "text_glow": "0 0 8px rgba(0,229,255,0.60)"
+  },
+  "motion": {
+    "panel_in": "220ms cubic-bezier(0.22, 1, 0.36, 1)",
+    "state_swap": "160ms ease-out",
+    "pulse": "1.4s ease-in-out infinite"
+  }
+}
