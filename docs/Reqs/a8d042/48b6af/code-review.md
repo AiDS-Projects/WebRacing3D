@@ -3,32 +3,22 @@
 ## 评分: 4/10 🚫 需修复
 
 ## 🔴 严重问题（必须修复）
-- {'file': 'package.json', 'line': 'devDependencies', 'title': '缺少 three 运行时依赖，构建必然失败', 'description': "src/main.ts 使用 `import * as THREE from 'three'`，src/types/index.ts 使用 `THREE.Color/ToneMapping/Texture`，vite.config.ts 的 manualChunks 与 optimizeDeps.include 也显式引用 'three'，但 package.json 仅声明了 @playwright/test 和 vite，完全没有 three 及 @types/three。安装依赖后 dev/build 会因找不到模块 three 而崩溃。three 属于运行时依赖，应放入 dependencies 而非 devDependencies，并补充 @types/three。"}
-- {'file': 'src/main.ts', 'line': 'checkCrossFileDuplicates', 'title': '跨文件重复检查用 includes 判断，将“引用”误判为“重复定义”', 'description': 'checkCrossFileDuplicates 对每个已声明类型名调用 `content.includes(name)`。任何文件只要在函数签名/注解中引用类型名（如 utils 中使用 Vec3），就会被误报为“重复定义了类型”。这会让校验器对正常引用产生大量假阳性，导致 scaffold 校验永远无法通过。应使用与 extractDeclarations 相同的声明语法正则进行匹配，而非子串包含。'}
-- {'file': 'src/main.ts', 'line': 'generateFileContent', 'title': '对 tsconfig.json 生成 `export {}`，输出非法 JSON', 'description': "SCAFFOLD_FILE_TREE 包含 'tsconfig.json' 与 'vite.config.ts'，generateFileContent 对非目录路径一律返回 SCAFFOLD_TEMPLATE（`export {}`）。tsconfig.json 是 JSON 文件，`export {}` 是非法 JSON，生成的配置必然损坏且无法被解析。生成器应对 .json 与 .ts 文件区分内容模板。"}
-- {'file': 'src/main.ts', 'line': '1', 'title': 'main.ts 自身使用被禁止的 `import * as THREE`，且嵌入完整 ProductAgent 流水线，违反 scaffoldOnly 约束', 'description': '脚手架语法约束 bannedImports 明确禁止 `import * as THREE` 与 `import three`，validateScaffoldOutput 的正则 `/import\\s+\\*\\s+as\\s+THREE/` 会命中本文件第 1 行，即 main.ts 一旦进入校验即被自身规则拒绝。同时该“骨架”文件实际内嵌了 classifyTicket/buildFileTree/runProductAgent 等完整规划器逻辑，与 SCAFFOLD_TEMPLATE 宣称的“`export {}` 占位、不引入业务模块”目标自相矛盾，存在明显范围失控与语义错位。'}
+- {'file': 'package.json', 'severity': 'critical', 'title': '缺少 three 依赖声明', 'description': "src/camera/FollowCamera.ts 与 src/physics/VehiclePhysics.ts 均 import 了 three（import * as THREE from 'three'），vite.config.ts 的 manualChunks 也引用了 'three'，但 package.json 的 dependencies/devDependencies 中完全没有 three。安装后 vite build 会因无法解析 'three' 而失败。", 'suggestion': '在 dependencies 中显式声明 "three": "^0.1xx.x" 并锁定版本；同时将 vite.config.ts 中 manualChunks 的 three 与实际依赖版本对齐。'}
+- {'file': 'src/camera/FollowCamera.ts', 'severity': 'critical', 'title': 'DEFAULT_CONFIG 可变对象被所有实例共享，setOffset 污染全局默认值', 'description': 'DEFAULT_CONFIG.offset / lookAtOffset 是模块级 new THREE.Vector3(...) 单例，构造函数用浅拷贝 { ...DEFAULT_CONFIG, ...config } 合并，所有未显式传入 offset 的 FollowCamera 实例共享同一 Vector3 引用。setOffset() 通过 this.config.offset.copy(offset) 原地修改该共享对象，导致后续创建的实例默认 offset 被永久篡改，产生跨实例状态污染。', 'suggestion': '合并配置时深拷贝 Vector3（例如 new THREE.Vector3().copy(DEFAULT_CONFIG.offset)），或让每个实例独立 new 默认偏移；DEFAULT_CONFIG 应使用 Object.freeze 或工厂函数返回新对象。'}
 
 ## 🟡 警告（建议修复）
-- {'file': 'vite.config.ts', 'line': 'build.sourcemap', 'title': '生产构建开启 sourcemap 泄露源码', 'description': "`sourcemap: true` 会将完整源代码映射打进生产产物，便于攻击者还原源码逻辑。生产环境应设为 false 或 'hidden'，仅保留 stack trace 定位能力。"}
-- {'file': 'src/main.ts', 'line': 'classifyTicket', 'title': '分类器子串匹配过于粗糙且冗余', 'description': "`ticket.raw.toLowerCase().includes(keyword.toLowerCase())` 为朴素子串匹配，'skeleton' 会命中 'skeletonizer' 等普通英文单词造成误分类；同时对 'skeleton' 等纯小写关键词重复调用 toLowerCase() 属无意义操作，中文关键词更无需大小写归一化。"}
-- {'file': 'src/main.ts', 'line': 'extractDeclarations', 'title': '声明提取正则遗漏 re-export 与 export default', 'description': "正则仅覆盖 `export type|interface|const|class|enum|function`，无法识别 `export { Foo } from './foo'`、`export type { Bar }`、`export default` 等语法，导致这些导出名不会被纳入跨文件重复检查，检查存在盲区。"}
-- {'file': 'src/main.ts', 'line': 'SCAFFOLD_FILE_TREE', 'title': '固定文件树与白名单不一致', 'description': "SCAFFOLD_FILE_TREE 含 'src/index.ts'、目录 'src/core/'，而 generator.validator 白名单与 deliveryWhitelist 均为 'src/main.ts' 且不含 'src/index.ts'。文件树与白名单的入口文件命名（index.ts vs main.ts）不一致，会造成路径校验与交付清单相互矛盾。"}
-- {'file': 'vite.config.ts', 'line': 'server.port', 'title': '硬编码魔法值', 'description': '端口 5173、chunkSizeWarningLimit 1500 等为硬编码魔法数字，缺乏集中配置或注释说明，维护时难以追溯其取值依据。'}
-- {'file': 'vite.config.ts', 'line': 'server.open', 'title': 'open: true 强制自动打开浏览器', 'description': '在 CI 或多次并行 dev 场景下，自动拉起浏览器窗口会造成干扰。建议改为 false 或通过环境变量控制。'}
+- {'file': 'package.json', 'severity': 'warning', 'title': '缺少 typescript 与 @types/node 依赖', 'description': '项目包含 .ts 源文件（src/main.ts、src/types/index.ts 等）且 vite.config.ts 使用了 node:url / import.meta.url，但 devDependencies 中无 typescript、@types/node。vite 用 esbuild 转译不会做类型检查，无法通过 tsc 校验，node:url 类型也会报错。', 'suggestion': '添加 "typescript" 与 "@types/node" 到 devDependencies，并在 scripts 中补充 "typecheck": "tsc --noEmit"。'}
+- {'file': 'src/physics/VehiclePhysics.ts', 'severity': 'warning', 'title': 'get state() 直接返回内部可变对象，破坏封装', 'description': 'getter 返回 this.state 的原始引用而非副本，调用方可绕过 VehiclePhysics 直接修改 position/heading/speed 等内部状态；同时 reset() 会整体替换 this.state 为新对象，使此前通过 getter 持有的旧引用变为悬空快照，二者结合极易造成状态不一致。', 'suggestion': '返回只读快照（如 Object.freeze 副本或 Readonly<VehicleState> 类型），状态变更统一收敛到类内部方法，符合项目「状态管理不变性」规范。'}
+- {'file': 'package.json', 'severity': 'warning', 'title': 'scripts 引用了不在交付白名单中的路径', 'description': '"screenshot": "playwright test tests/screenshots" 与 "verify": "node scripts/verify.mjs" 指向的 tests/screenshots 目录与 scripts/verify.mjs 均不在 deliveryWhitelist 白名单内，仓库中大概率不存在，执行会直接报错。', 'suggestion': '补全对应测试与校验脚本文件，或从 scripts 中移除尚未实现的命令，避免交付不可运行的脚本。'}
+- {'file': 'package.json', 'severity': 'warning', 'title': 'generator 字段混入 npm 清单', 'description': 'package.json 中嵌入了大量非标准的 generator 工作流元数据（deliveryWhitelist、scaffoldOnly、validator 等），这些属于构建/编排工具内部配置，与 npm 包清单语义无关，会污染 manifests 并可能被工具误读。', 'suggestion': '将 generator 编排配置迁移到独立配置文件（如 generator.config.json 或 scripts 目录），package.json 仅保留 npm 标准字段。'}
 
 ## 🟢 建议（可选优化）
-- {'file': 'vite.config.ts', 'line': 'plugins', 'title': '空 plugins 数组冗余', 'description': '`plugins: []` 可整体省略，保留空数组无实际作用，反而暗示未来需在此处扩展但当前无插件。'}
-- {'file': 'src/types/index.ts', 'line': 'ColorLike', 'title': 'number 作为颜色类型语义歧义', 'description': '`ColorLike = string | number | THREE.Color` 中的 number 未说明是十六进制整型、RGB 分量还是索引，缺乏注释约束，调用方难以确定取值范围。'}
-- {'file': 'package.json', 'line': 'name', 'title': '包名与项目/描述不一致', 'description': "项目为 WebRacing3D，包名为 'ads-game-ui'，description 又写“基础游戏 UI：速度表…”，三者指向混乱，建议统一命名与描述口径。"}
-- {'file': 'src/main.ts', 'line': 'buildFileTree', 'title': '冗余展开拷贝', 'description': '`return [...SCAFFOLD_FILE_TREE]` 的展开拷贝无必要，直接 `return SCAFFOLD_FILE_TREE` 即可，且避免误导读者以为存在可变性保护需求。'}
-- {'file': 'package.json', 'line': 'generator.deliveryWhitelist', 'title': '白名单引用未交付文件', 'description': 'deliveryWhitelist 与 validator 白名单列出 tsconfig.json、tsconfig.node.json、index.html，但当前展示内容中这些文件均未实际交付，清单与交付物不匹配，需补齐或从白名单移除。'}
+- {'file': 'src/camera/FollowCamera.ts', 'severity': 'suggestion', 'title': '构造函数未深拷贝传入的 Vector3 配置', 'description': '即使调用方显式传入 config.offset，也仅保存了外部 Vector3 的引用，调用方后续修改该 Vector3 会静默影响相机行为，缺少所有权边界。', 'suggestion': '构造时对 offset / lookAtOffset 做 copy() 拷贝，明确相机内部拥有独立副本。'}
+- {'file': 'src/camera/FollowCamera.ts', 'severity': 'suggestion', 'title': 'update 每帧反复 clone 与分配 Vector3', 'description': 'updatePosition / updateLookAt 每次调用都执行 offset.clone()、lookAtOffset.clone()，在每帧热路径产生大量临时对象分配与 GC 压力。', 'suggestion': '复用预分配的临时 Vector3 成员变量（desired / lookAt 缓存），避免每帧 new。'}
+- {'file': 'src/physics/VehiclePhysics.ts', 'severity': 'suggestion', 'title': '魔法数值缺少语义化注释', 'description': 'DEFAULT_VEHICLE_CONFIG 中 turnRate: 2.6、steerSpeed: 6、grip: 0.85、slipFactor: 0.6 等均为硬编码魔法值，缺乏单位或调参依据说明，后续调优难以理解每个系数的物理含义。', 'suggestion': '为关键系数补充注释说明其物理意义与调参经验值范围，或抽离为可配置的调参表。'}
+- {'file': 'vite.config.ts', 'severity': 'suggestion', 'title': 'build.target 与依赖兼容性未对齐', 'description': "build.target 固定为 'es2020'，但 three 新版本可能输出更高版本语法，且未配置 cssCodeSplit/sourcemap 等产物选项，构建策略较单一。", 'suggestion': '根据 three 实际版本确认 target 兼容性，并考虑按环境补充 sourcemap 与 minify 策略。'}
 
 ## 审查的代码
 - vite.config.ts
 - package.json
-- src/main.ts
-- src/types/index.ts
-- src/types/input.ts
-- src/types/scene.ts
-- src/utils/index.ts
 - docs/Reqs/a8d042/48b6af/dev-notes.md
