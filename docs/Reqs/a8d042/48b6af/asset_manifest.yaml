@@ -1,19 +1,22 @@
 # asset_manifest.yaml — 初始化项目脚手架与技术栈
-# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
-# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+# 由 ArtistAgent 落地更新
+# status: sourced=命中资产库 / placeholder=占位图待替换 / manual_required=需人工提供 / not_found=未命中
 assets:
-  - id: retry
-    type: icon
-    description: 重试按钮图标 24px outline 风格
-    source_hint: iconify
-    status: pending
   - id: warning
     type: icon
     description: 错误提示图标 24px outline 风格
-    source_hint: iconify
-    status: pending
+    status: sourced
+    path: icons/lucide/battery-warning.svg
+    matched_name: battery-warning
+    asset_db_id: AST-000154
+    match_score: 0.7
+  - id: retry
+    type: icon
+    description: 重试按钮图标 24px outline 风格
+    status: placeholder
+    path: docs/Reqs/a8d042/48b6af/assets/placeholder/retry.png
   - id: error_state
     type: illustration
     description: 初始化失败/WebGL 不支持错误插画 400x300 扁平风格
-    source_hint: ai_generate
-    status: pending
+    status: placeholder
+    path: docs/Reqs/a8d042/48b6af/assets/placeholder/error_state.png
