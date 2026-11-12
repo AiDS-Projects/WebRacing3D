@@ -1,32 +1,32 @@
 # 代码审查 — 初始化项目脚手架与技术栈
 
-## 评分: 3/10 🚫 需修复
+## 评分: 4/10 🚫 需修复
 
 ## 🔴 严重问题（必须修复）
-- {'level': 'critical', 'file': 'package.json', 'message': '缺少运行时/构建依赖：vite.config.ts 的 optimizeDeps.include 与 manualChunks 均引用 \'three\'，src/main.ts 执行 `import * as THREE from \'three\'`，但 devDependencies 中只有 @playwright/test 和 vite，未声明 three、typescript、@types/node（tsconfig.node.json 的 types:["node"] 也依赖 @types/node）。dev/build 将直接报模块解析失败，脚手架无法启动。'}
-- {'level': 'critical', 'file': 'tsconfig.node.json', 'message': '"composite": true 与 "noEmit": true 互斥。composite 项目要求可被引用并需产生声明/构建信息，noEmit 与之冲突（TS 会报配置错误），会导致该 tsconfig 失效、类型检查/引用解析异常。'}
-- {'level': 'critical', 'file': 'index.html', 'message': '脚手架契约违约：package.json.generator.skeleton 明确要求 mainTs 仅 sceneInitPlaceholderOnly，且 bannedBusinessModules 禁止 camera/physics/player/race 业务模块，但 index.html 内联脚本实现了完整业务逻辑（速度表绘制、圈数/计时器、键盘加速/刹车状态机）。这超出「初始化项目脚手架」范围，且业务代码未按交付白名单拆分，会被验收阶段判定为越界。'}
+- {'file': 'package.json', 'line': None, 'severity': 'critical', 'title': '运行时依赖与工具链依赖全部缺失', 'description': "代码中 `src/main.ts` 使用 `import * as THREE from 'three'`，`src/types/index.ts` 使用 `import type * as THREE from 'three'`，且项目用 TypeScript 编写，但 package.json 的 devDependencies 仅包含 `@playwright/test` 与 `vite`，没有 `dependencies` 字段，也缺少 `three`、`typescript`、`@types/three`。安装后 `vite build` 与类型检查将直接失败。", 'suggestion': '补充 `three`、`typescript`、`@types/three`（three 为运行时依赖，建议放入 dependencies 或至少 devDependencies），并确保 `npm install` 后能通过构建。'}
+- {'file': 'src/index.ts', 'line': 1, 'severity': 'critical', 'title': 'src/index.ts 不是可编译的源代码', 'description': '该文件内容是一段解释「无法按要求修改」的英文对话文本（含 Markdown 表格、反引号、`src/index.ts:245` 引用等），不是合法的 TypeScript 源码，无法通过编译。且该文件路径不在 deliveryWhitelist 与 validator.whitelist 中（白名单只有 `src/types/index.ts`、`src/utils/index.ts` 等），与 generator 配置自相矛盾。', 'suggestion': '删除该占位文本，或按脚手架设计落地为真正的入口/导出文件；确保生成器白名单与实际文件树一致。'}
+- {'file': 'package.json', 'line': None, 'severity': 'critical', 'title': 'generator 配置与 src/index.ts 语义不一致导致路由失效', 'description': 'package.json 的 generator.routing.skeletonMarkerFiles 为 [vite.config.ts, index.html, src/main.ts]，而 src/index.ts 文本声称存在 253 行渲染应用与入口 bootstrap，二者描述的产物完全不同。generator 是实际 source of truth，但清理目录 `removeDirectories` 声明删除 4 个目录（camera/physics/player/race），实际磁盘上还存在 `src/camera/FollowCamera.ts`、`src/player/PlayerCar.ts`、`src/race/LapTracker.ts`，说明 preGeneration cleanup 并未实际执行或未生效。', 'suggestion': '统一 generator 配置与实际文件树；确认 cleanup 是否真正运行，并明确 src/index.ts 的归属（入口 or 类型聚合），消除路由判断歧义。'}
 
 ## 🟡 警告（建议修复）
-- {'level': 'warning', 'file': 'package.json', 'message': 'build 脚本仅为 `vite build`，未执行 tsc 类型检查，类型错误无法在构建阶段拦截；应增加 typecheck 脚本并在 build/CI 中串联。'}
-- {'level': 'warning', 'file': 'vite.config.ts', 'message': "别名 '@types' 与 npm 的 '@types/*' 类型包作用域重名，容易在 import '@types/...' 时产生歧义或与 TS 模块解析冲突，建议改名（如 '@typeDefs'）。"}
-- {'level': 'warning', 'file': 'index.html', 'message': '业务逻辑与样式以 <script>/<style> 内联在 index.html，完全绕过项目 TypeScript 质量规范（类型安全边界、禁止 any、共享逻辑沉淀），无法被 ESLint/TS 检查，后续难以维护与复用。'}
-- {'level': 'warning', 'file': 'index.html', 'message': 'canvas 声明 width/height=680 但 CSS 强制 width:100%（max-width 340px），未按 devicePixelRatio 缩放，高 DPI 屏幕下表盘刻度与弧线会明显模糊。'}
-- {'level': 'warning', 'file': 'index.html', 'message': '大量魔法值散落：MAX_SPEED/ACCEL/BRAKE/DRAG 等物理常量、颜色分区 [0,80]/[80,160]/[160,MAX_SPEED]、START_DEG=135/SWEEP_DEG=270 均硬编码在 IIFE 内，无配置来源，与 src/types 中已声明的 RendererConfig/SceneConfig 等配置体系脱节。'}
-- {'level': 'warning', 'file': 'index.html', 'message': '空格键开始/重置（提示文案声明）但未调用 e.preventDefault()，页面存在滚动风险；且内联脚本使用 ES5 的 var 与 IIFE，与项目 TS 严格规范不一致。'}
+- {'file': 'vite.config.ts', 'line': None, 'severity': 'warning', 'title': "base: './' 相对路径可能导致部署路由问题", 'description': "`base: './'` 会生成相对路径资源引用，在 SPA 深层路由刷新或带 history 路由时，静态资源路径会相对于当前 URL 解析而 404；若部署在根路径应使用 '/'。", 'suggestion': '根据实际部署路径确定 base，或改用环境变量 `process.env.BASE_URL` 按需配置。'}
+- {'file': 'vite.config.ts', 'line': None, 'severity': 'warning', 'title': '开发服务器暴露到公网且开启全量 CORS', 'description': "`server.host: '0.0.0.0'` 使开发服务器监听所有网卡，配合 `cors: true` 允许任意来源跨域访问，存在被局域网扫描/注入的暴露风险。", 'suggestion': "默认 `host: '127.0.0.1'`，仅在需要局域网联调时显式开启；cors 按需限定 origin。"}
+- {'file': 'vite.config.ts', 'line': None, 'severity': 'warning', 'title': 'chunkSizeWarningLimit: 1024 掩盖了 three 体积问题', 'description': '将警告阈值抬高到 1024KB 只是屏蔽提示，并未解决 three 全量引入导致的包体积问题；`manualChunks` 单独拆分 three 仍会产出超大 chunk。', 'suggestion': "使用按需导入（`import { Scene } from 'three'`）配合 tree-shaking，或配置更细的 manualChunks，而非简单调高阈值。"}
+- {'file': 'package.json', 'line': None, 'severity': 'warning', 'title': '包名与描述和实际项目不符', 'description': 'name 为 `ads-game-ui`，description 为「基础游戏 UI：速度表、当前圈数、计时器」，与 WebRacing3D 仓库及脚手架（Three.js 场景/相机/物理/赛车）定位不一致，易误导维护者。', 'suggestion': '统一 name/description 与仓库及脚手架目标一致。'}
+- {'file': 'package.json', 'line': None, 'severity': 'warning', 'title': 'playwright 脚本缺少配置文件与测试目录', 'description': 'scripts 中定义 `test`、`test:headed`、`test:ui`、`screenshot`、`report` 均依赖 `playwright test`，但未提供 `playwright.config.ts`，且 `screenshot` 指向 `tests/screenshots` 目录在当前产物中未见。', 'suggestion': '补齐 playwright.config.ts 与测试目录，或移除未实现的脚本，避免 `npm test` 直接报错。'}
+- {'file': 'package.json', 'line': None, 'severity': 'warning', 'title': 'generator 编排配置堆叠在 package.json 中', 'description': 'cleanup/routing/base_stages/validator/rework 等生成器状态机配置全部以 JSON 形式嵌入 package.json，属于非标准做法，可维护性差且易与真实产物脱节（已出现上述不一致）。', 'suggestion': '将生成器配置抽离到独立的配置模块或脚本中，保持 package.json 职责单一。'}
 
 ## 🟢 建议（可选优化）
-- {'level': 'suggestion', 'file': 'index.html', 'message': '将 <style> 与 <script> 抽取为独立文件（如 src/ui/ 或 styles/），与组件文件 PascalCase、样式同名规范保持一致。'}
-- {'level': 'suggestion', 'file': 'index.html', 'message': '为开始/重置按钮补充 aria-label 或 role，状态变更时更新 aria-pressed/disabled 语义，提升可访问性。'}
-- {'level': 'suggestion', 'file': 'src/types/index.ts', 'message': 'ColorLike 中 number 类型未说明其语义（THREE.Color 的十六进制整型），建议补充注释；toneMapping 使用 THREE.ToneMapping 枚举作为类型时建议约束为具体枚举成员联合类型以收紧边界。'}
-- {'level': 'suggestion', 'file': 'src/types/index.ts', 'message': '骨架阶段定义了 CameraConfig/PerspectiveCameraConfig 等相机类型，与 generator 中禁止 camera 业务模块的约束存在语义冲突，建议确认这些类型是否应延后至对应业务工单引入。'}
-- {'level': 'suggestion', 'file': 'vite.config.ts', 'message': 'manualChunks 仅将 three 拆分为单 chunk，收益有限；可考虑按业务域拆分，或降低 chunkSizeWarningLimit=1500 以暴露真实分包告警。'}
+- {'file': 'src/types/index.ts', 'line': None, 'severity': 'suggestion', 'title': '类型模块混入运行时常量', 'description': '`src/types/index.ts` 以 `import type` 开头、定位为纯类型层，却导出了运行时常量 `PRE_GENERATION_CLEANUP_DIRS` 与状态机类型，违背「类型与实现分离」边界。', 'suggestion': '将运行时常量移到 `src/utils/` 或独立常量模块，types 目录只保留纯类型声明。'}
+- {'file': 'src/types/index.ts', 'line': None, 'severity': 'suggestion', 'title': '索引签名可用 Record 替代', 'description': '`AssetMap` 与 `EventMap` 使用 `[id: string]: ...` 索引签名，语义不如 `Record<string, X>` 明确，且对 null/undefined 安全提示较弱。', 'suggestion': '改用 `Record<string, ...>` 并配合 `strict`/`noUncheckedIndexedAccess` 提升类型安全。'}
+- {'file': 'src/types/index.ts', 'line': None, 'severity': 'suggestion', 'title': 'Vec3 与 THREE.Vector3 语义重复', 'description': '自定义可序列化 `Vec3` 与 THREE.Vector3 概念重叠，缺少说明为何需要可序列化版本，易在使用时混淆转换。', 'suggestion': '在注释中明确 Vec3 的序列化用途，或提供 Vec3 与 THREE.Vector3 的转换工具函数。'}
+- {'file': 'src/types/index.ts', 'line': None, 'severity': 'suggestion', 'title': '注释与实际目录数量不符', 'description': '清理逻辑相关文档声称「五个错误目录」，但 `PRE_GENERATION_CLEANUP_DIRS` 仅列出 4 个（camera/physics/player/race）。', 'suggestion': '修正注释为「四个」或补齐缺失目录，保持文档与代码一致。'}
+- {'file': 'vite.config.ts', 'line': None, 'severity': 'suggestion', 'title': 'assetsInclude 对 gltf/glb/ktx2 处理语义不完整', 'description': 'gltf/glb 在 Vite 中默认按 URL 资源处理即可，显式声明无额外收益；ktx2 纹理实际需要 BasisTextureLoader 运行时解码，仅加入 assetsInclude 无法保证正确加载。', 'suggestion': '精简 assetsInclude 为真正需要按静态资源处理的扩展，并在文档中说明 ktx2 的加载链路。'}
 
 ## 审查的代码
-- tsconfig.node.json
 - vite.config.ts
 - package.json
-- index.html
 - src/main.ts
+- src/index.ts
 - src/types/index.ts
+- src/types/input.ts
 - docs/Reqs/a8d042/48b6af/dev-notes.md
