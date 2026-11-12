@@ -8,7 +8,7 @@
 | 状态 | acceptance_rejected |
 
 ## 反馈
-本工单交付物未完成。类型定义层（src/types/index.ts、input.ts）与共享工具层（src/utils/time.ts）已交付且质量良好，目录结构（camera/physics/player/race/types/utils）齐全，src/main.ts 与 src/index.ts 两个入口文件代码完整。但作为「Vite + TypeScript + Three.js 脚手架」的核心环节存在关键缺失，导致骨架实际不可用：一、明确产出文件 vite.config.ts 与 docs/Reqs/a8d042/48b6af/dev-notes.md 均不存在（7 个承诺产出缺失 2 个）；二、package.json 未声明 three/typescript/@types/three 依赖，而 src/main.ts 与 src/index.ts 均 `import * as THREE from 'three'`，npm install 后构建必然失败；三、index.html 未通过 `<script type=module src="/src/main.ts">` 引用入口，Three.js 骨架与页面完全脱节——当前页面能正常渲染，依赖的是 index.html 内联的自包含静态仪表盘脚本（Canvas 速度表 + 计时器），与本工单的 Three.js 骨架无关。因此「统一入口」并未真正接通，脚手架尚未达到可运行状态。
+本工单交付物未完成。页面可正常渲染、src/main.ts 已搭建出可用的 Three.js 场景骨架，src/types/index.ts、input.ts、scene.ts 三类类型定义也基本到位；但 8 项承诺产出中有 3 项缺失，且技术栈核心依赖与「统一入口」承诺未兑现，属于部分交付，不达标。
 
 ## 检查清单
   1. 页面能否正常打开
@@ -17,11 +17,11 @@
 
 ## 运行效果截图
 
-![验收截图](screenshots/acceptance_1794460192.png)
+![验收截图](screenshots/acceptance_1794461464.png)
 
 ## 问题
-- vite.config.ts 缺失：本工单明确产出文件之一不存在，Vite 项目无配置文件（虽有默认值，但属承诺交付物缺失）。
-- dev-notes.md 缺失：docs/Reqs/a8d042/48b6af/ 目录整体不存在，开发备注文档未交付。
-- package.json 未声明 three / typescript / @types/three 依赖：src/main.ts、src/index.ts 的 `import * as THREE from 'three'` 无法解析，npm run build / dev 必然失败，技术栈依赖未落地。
-- index.html 未引用 src/main.ts：无 `<script type=module>` 入口，Three.js 骨架代码从未被加载执行，页面渲染的是内联静态仪表盘，与骨架脱节。
-- 共享工具层未真正沉淀：src/main.ts 内大量工具函数（createRenderer/createCamera/createLights/getSize）内联定义，未复用 src/utils/，与「统一共享工具层」目标不符。
+- vite.config.ts 缺失：该文件是脚手架标记文件与承诺产出之一，目录中不存在（ls 报 No such file or directory）。
+- src/utils/index.ts 缺失：共享工具层统一入口未交付，src/utils/ 下仅有 time.ts，且其内容为圈数计时业务逻辑（LapTimer），并非脚手架承诺的共享工具层入口。
+- docs/Reqs/a8d042/48b6af/dev-notes.md 缺失：docs 目录整体不存在，开发备注文档未产出。
+- package.json 未声明 three 依赖：src/main.ts 与 src/index.ts 均 import * as THREE from 'three'，但 dependencies/devDependencies 中无 three（仅 vite 与 @playwright/test），技术栈核心库未挂接，安装后无法解析依赖。
+- 统一入口未兑现：src/main.ts 未从 src/types/ 与 src/utils/ 导入任何内容，而是在入口内重复内联定义了 CameraConfig/AppConfig/SceneSize 等类型及 createRenderer/createCamera 等工具函数，与需求「建立类型定义与共享工具层，为后续模块提供统一入口」相悖。
