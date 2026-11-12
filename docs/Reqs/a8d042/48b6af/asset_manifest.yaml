@@ -1,31 +1,19 @@
 # asset_manifest.yaml — 初始化项目脚手架与技术栈
-# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
 assets:
-  - id: asset_001
+  - id: favicon
     type: icon
-    description: 本工单为脚手架验证，按边界条件不引入美术资产，仅保留必要的功能图标占位：
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_002
+    description: 应用 favicon，16x16 与 32x32 两档
+    source_hint: ai_generate
+    status: pending
+  - id: error_warning
     type: icon
-    description: icon: warning（WebGL 不支持 / 初始化失败错误提示，24px，outline 风格，用于 ErrorOverlay 标题左侧）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_003
+    description: 错误提示告警图标，48px outline，用于 ErrorOverlay
+    source_hint: iconify
+    status: pending
+  - id: logo_placeholder
     type: icon
-    description: icon: refresh（重试按钮图标，24px，outline 风格，loading 时旋转为 spinner）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_004
-    type: icon
-    description: icon: info（调试信息条占位图标，16px，outline 风格，可省略）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_005
-    type: illustration
-    description: illustration: empty-state（本阶段不适用，后续列表类模块预留，400×300）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_006
-    type: photo
-    description: image: 无（本工单明确禁止美术资产导入）
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_007
-    type: icon
-    description: 补充说明：以上 icon 建议暂以系统字体符号或内联 SVG 占位，正式美术资产留待后续 UI 模块工单统一交付。
-    status: pending  # 待美术Agent确认来源和规格
+    description: 项目占位 Logo，64x64，用于加载层与后续启动页
+    source_hint: ai_generate
+    status: pending
