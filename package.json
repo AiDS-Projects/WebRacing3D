@@ -33,6 +33,25 @@
         "src/utils/index.ts"
       ]
     },
+    "cleanup": {
+      "preGeneration": true,
+      "restoreEmptyBaseline": true,
+      "removeDirectories": [
+        "src/camera",
+        "src/physics",
+        "src/player",
+        "src/race"
+      ]
+    },
+    "routing": {
+      "skeletonMarkerFiles": [
+        "vite.config.ts",
+        "index.html",
+        "src/main.ts"
+      ],
+      "onMissingMarkerFile": "full_skeleton_regeneration",
+      "forbidDiffOnSemanticMismatch": true
+    },
     "base_stages": {
       "development_done": {
         "judge": "exact_path_set_diff",
@@ -60,6 +79,17 @@
             "rework"
           ]
         }
+      },
+      "development_failed": {
+        "knowledgeBase": "2026-10-15_02",
+        "trigger": {
+          "filesEmptyOrInvalid": true
+        },
+        "onFilesInvalid": "retry",
+        "flow": [
+          "acceptance_rejected",
+          "rework"
+        ]
       }
     },
     "rework": {
@@ -80,6 +110,20 @@
           "race"
         ]
       }
+    },
+    "validator": {
+      "pathWhitelistHardGate": true,
+      "onNonWhitelistPath": "fail",
+      "whitelist": [
+        "package.json",
+        "tsconfig.json",
+        "tsconfig.node.json",
+        "vite.config.ts",
+        "index.html",
+        "src/main.ts",
+        "src/types/index.ts",
+        "src/utils/index.ts"
+      ]
     },
     "contextInjection": {
       "disableBusinessCodeRetrieval": true

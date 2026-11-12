@@ -177,3 +177,79 @@ export interface AppState {
   frame: number;
   elapsed: number;
 }
+
+/* ============================================================================
+ * 脚手架初始化：生成器 / 状态机 / 校验器 类型
+ * ============================================================================ */
+
+/** 骨架标志文件：任一缺失即判定项目需走全量骨架生成 */
+export type SkeletonFlagFile = 'vite.config.ts' | 'index.html' | 'src/main.ts';
+
+/** 生成路由 */
+export type GenerationRoute = 'full' | 'incremental';
+
+/** 增量生成器路由判断结果 */
+export interface GenerationRouteDecision {
+  route: GenerationRoute;
+  /** 缺失的骨架标志文件；非空时强制走全量生成 */
+  missingFlags: SkeletonFlagFile[];
+  /** 骨架标志缺失时，禁止对语义不一致文件做 diff */
+  forceFull: boolean;
+}
+
+/** 生成器前置 cleanup 步骤要删除的错误业务目录（恢复空项目基线） */
+export const PRE_GENERATION_CLEANUP_DIRS = [
+  'src/camera/',
+  'src/physics/',
+  'src/player/',
+  'src/race/',
+] as const;
+
+/** 单个待清理目录 */
+export type CleanupDirectory = (typeof PRE_GENERATION_CLEANUP_DIRS)[number];
+
+/** base_stages 状态机阶段名（含 development_failed） */
+export type BaseStageName =
+  | 'init'
+  | 'development'
+  | 'development_failed'
+  | 'validation'
+  | 'complete';
+
+/** 阶段执行结果 */
+export interface StageResult {
+  stage: BaseStageName;
+  /** 生成/校验产出的文件清单；为空或非法时进入失败重试分支 */
+  files: string[];
+}
+
+/** development 阶段失败信息（对应 2026-10-15_02） */
+export interface DevelopmentFailedInfo {
+  stage: 'development_failed';
+  reason: 'empty_files' | 'invalid_files';
+  files: string[];
+}
+
+/** 校验器路径白名单硬门禁：非白名单路径在返回前直接判 fail */
+export const VALIDATOR_PATH_WHITELIST: readonly string[] = [
+  'src/',
+  'src/main.ts',
+  'src/types/',
+  'index.html',
+  'vite.config.ts',
+];
+
+/** 校验器路径黑名单（错误业务目录，禁止再次入库） */
+export const VALIDATOR_PATH_BLOCKLIST: readonly string[] = [
+  'src/camera/',
+  'src/physics/',
+  'src/player/',
+  'src/race/',
+];
+
+/** 校验结果 */
+export interface ValidationResult {
+  ok: boolean;
+  /** 命中黑名单或不在白名单内的路径 */
+  blockedPaths: string[];
+}
