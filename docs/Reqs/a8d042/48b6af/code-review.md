@@ -3,32 +3,31 @@
 ## 评分: 5/10 🚫 需修复
 
 ## 🔴 严重问题（必须修复）
-- {'file': 'vite.config.ts', 'line': 7, 'message': 'package.json 声明 "type": "module"，vite.config.ts 以 ESM 加载，但代码使用 CJS 专有的 __dirname（第 7 行起多处 resolve(__dirname, \'src\')）。ESM 环境下 __dirname 未定义，Vite 加载配置时会抛 ReferenceError: __dirname is not defined，导致 dev/build/preview 全部无法启动。应改用 fileURLToPath(new URL(\'./src\', import.meta.url))。', 'suggestion': "import { fileURLToPath, URL } from 'node:url'; 用 fileURLToPath(new URL('./src', import.meta.url)) 替换所有 resolve(__dirname, ...)"}
+- {'file': '.eslintrc.cjs', 'line': 18, 'title': '启用 type-checking 规则但未配置 parserOptions.project', 'description': "extends 中引用了 plugin:@typescript-eslint/recommended-requiring-type-checking，这类规则依赖 TS 类型信息，必须在 parserOptions 中提供 project（或 projectService），但当前 parserOptions 只有 ecmaVersion/sourceType/ecmaFeatures，没有 project 字段。运行 ESLint 时会直接报错 'You have used a rule which requires type information...'，导致整个 lint 工具链无法工作，与本任务『初始化脚手架』的目标直接冲突。", 'suggestion': "在 parserOptions 中补充 project: './tsconfig.json'（若存在 tsconfig.node.json 等多份配置需用数组或 projectService），并确保 type-aware 规则能拿到完整类型上下文。"}
+- {'file': 'src/utils/index.ts', 'line': 210, 'title': 'updateCameraAspect 用 window 尺寸而非渲染画布尺寸计算宽高比', 'description': 'updateCameraAspect 通过 getAspectRatio() 读取 window.innerWidth/innerHeight 来计算宽高比，而 AppConfig 是 container 容器式渲染（renderer 绑定到指定 HTMLElement）。当画布不等于视口（例如嵌入布局、侧边栏、缩放容器）时，相机 aspect 与真实渲染分辨率不一致，导致画面拉伸/变形，属于渲染正确性逻辑错误。', 'suggestion': '应从 renderer.domElement（canvas.clientWidth/Height）或传入的容器尺寸计算 aspect，而不是全局 window 尺寸；同时把该函数改为接收 renderer 或 container 参数，保持单一数据来源。'}
 
 ## 🟡 警告（建议修复）
-- {'file': 'index.html', 'line': 24, 'message': '#app 设置 position:fixed; inset:0; z-index:-1，负 z-index 使画布渲染到 body 背景（#f0f2f5）之后，Three.js canvas 很可能被背景遮挡而不可见。应使用 z-index:0 或移除负值，并让 .container 处于更高的正层级。', 'suggestion': '将 #app 的 z-index 改为 0（或移除），.container 设为 position:relative; z-index:1。'}
-- {'file': 'src/main.ts', 'line': 1, 'message': '违反「共享逻辑优先」规则：src/types/scene.ts 已定义 CameraConfig、SceneConfig、SceneContext 等共享类型，但 main.ts 重新内联定义了 CameraConfig、AppConfig、SceneSize 等本地接口，造成类型定义重复且共享层形同虚设。后续场景模块维护两套类型极易漂移。', 'suggestion': '删除 main.ts 内联类型，改从 src/types/scene.ts 导入 SceneInitOptions / CameraConfig / RendererConfig 等。'}
-- {'file': '.eslintrc.cjs', 'line': 1, 'message': 'ESLint 配置引用了 @typescript-eslint/parser、plugin:@typescript-eslint、prettier(eslint-config-prettier)，但这些包均未在 package.json devDependencies 中声明，且 scripts 中没有任何 lint/format 命令。配置文件是死配置，无法执行，且会误导后续开发者以为已接入 lint。', 'suggestion': '补齐 @typescript-eslint/parser、@typescript-eslint/eslint-plugin、eslint、eslint-config-prettier、prettier 依赖，并在 scripts 增加 lint/format 命令。'}
-- {'file': 'tsconfig.json', 'line': 24, 'message': 'include 仅含 ["src"]，vite.config.ts 不在类型检查范围内，__dirname 等配置错误无法被 tsc 捕获（本案例中该错误正是因此漏检）。', 'suggestion': '将 vite.config.ts 纳入 include，或单独配置 tsconfig.node.json 供配置类文件使用。'}
-- {'file': 'src/main.ts', 'line': 2, 'message': 'OrbitControls 被导入但未在可见代码中使用，tsconfig 开启 noUnusedLocals:true 会导致 build(tsc) 阶段编译失败。同时 createDemoContent/createLights 中大量硬编码魔法值（0x1a1a2e、0x2e2e4a、shadow.mapSize 2048、Math.min(devicePixelRatio,2) 的 2、相机 fov/near/far）。', 'suggestion': '移除未使用导入或将 OrbitControls 接入；将颜色/阴影分辨率/像素比上限等抽为常量或配置项。'}
-- {'file': 'src/index.ts', 'line': 1, 'message': "export * from './main' 无效：main.ts 是副作用型入口，无任何具名导出，该 re-export 导出空集合，反而会把 main.ts 的启动副作用扩散到任何 import 该模块的消费者。", 'suggestion': "明确 index.ts 的职责，只 re-export 类型与工具（types/scene、utils/math），移除对 './main' 的 re-export。"}
-- {'file': '.prettierrc', 'line': 2, 'message': 'Prettier 配置 semi:true，但 src/types/scene.ts 采用无分号风格（import 与部分声明无分号），与 src/utils/math.ts 的分号风格不一致，说明格式化未统一执行。', 'suggestion': '统一代码风格：要么改为 semi:false，要么对 types/scene.ts 执行 prettier 格式化。'}
+- {'file': 'src/utils/index.ts', 'line': 165, 'title': 'disposeMaterial 用 as unknown as Dict + Object.keys 反射遍历材质属性', 'description': '为查找纹理，代码用 (material as unknown as Dict)[key] 对材质对象做反射式遍历，并通过 (value as THREE.Texture).isTexture 判断。这违反了项目自身『减少 as 断言、外部/内部数据走严格类型』的规范，且 Object.keys 只返回自身可枚举属性，可能漏掉继承或不可枚举的贴图槽位；对每个材质逐 key 遍历也低效。', 'suggestion': "维护一份明确的贴图字段清单（如 ['map','normalMap','roughnessMap','metalnessMap','aoMap','emissiveMap','alphaMap','envMap'] 等），显式读取并 dispose，去掉 as unknown as Dict 断言。"}
+- {'file': 'src/types/index.ts / src/utils/index.ts', 'line': 0, 'title': 'Size、Listener/EventCallback 等类型跨文件重复定义', 'description': 'interface Size 在 src/types/index.ts 与 src/utils/index.ts 各定义一份，Listener<T> 与 EventCallback<T>、Dict 与 EventMap 语义高度重叠。违反项目『共享逻辑优先、单一数据源』规则，后续改动容易出现两处不一致。', 'suggestion': '统一由 src/types/index.ts 作为类型唯一出口，utils 层从 types 重新导出或直接引用，删除重复定义。'}
+- {'file': 'src/types/index.ts', 'line': 0, 'title': 'AssetMap 联合类型中混入裸 object 使类型退化为无意义', 'description': 'AssetMap 的索引值类型为 THREE.Texture | THREE.Object3D | THREE.Audio | object | HTMLVideoElement，其中小写 object 会吸收所有前面的对象类型，联合实际等价于 object | HTMLVideoElement，导致调用方拿到的都是 object，无法获得任何有效类型推断，形同 any。', 'suggestion': '改为 unknown 并在消费处用类型守卫收窄，或设计为带 kind 判别字段的联合类型，去除裸 object。'}
+- {'file': 'src/utils/index.ts', 'line': 185, 'title': 'resizeRendererToDisplaySize 硬编码像素比上限且未 setPixelRatio', 'description': 'Math.min(window.devicePixelRatio, 2) 中的 2 是魔法值，且完全忽略 RendererConfig.pixelRatio 配置；同时只调用 setSize(width,height,false)，从未调用 renderer.setPixelRatio，导致设备像素比与配置脱节，高 DPI 屏上可能渲染模糊或尺寸异常。', 'suggestion': '像素比上限提取为常量或从配置读取，并在设置尺寸前调用 renderer.setPixelRatio(pixelRatio)。'}
+- {'file': 'src/utils/index.ts', 'line': 200, 'title': 'updateCameraAspect 存在明显死代码', 'description': 'const canvas = camera.projectionMatrix; void canvas; 两行无任何作用，变量名 canvas 与 projectionMatrix 语义严重不符，是遗留调试/草稿代码，降低可读性并误导维护者。', 'suggestion': '删除这两行死代码。'}
 
 ## 🟢 建议（可选优化）
-- {'file': 'src/utils/math.ts', 'line': 42, 'message': 'smoothstep(edge0, edge1, x) 未处理 edge0===edge1 的情况，会除零产生 NaN；mapRange 虽已处理 inMin===inMax，但返回 outMin 这一约定未在注释说明，边界行为不直观。', 'suggestion': 'smoothstep 在 edge0===edge1 时返回 0；为 mapRange 的退化分支补充注释说明。'}
-- {'file': 'src/utils/math.ts', 'line': 57, 'message': 'distance 函数是 2D 距离却使用了通用命名，与 distance3 命名不对称，易误用；建议命名 distance2 或在文档中明确维度。', 'suggestion': '重命名为 distance2 以与 distance3 对齐，减少误用。'}
-- {'file': 'src/main.ts', 'line': 15, 'message': 'getSize 使用 container.clientWidth || window.innerWidth，当容器合法宽度为 0（隐藏/初始化中）时会静默回退到窗口尺寸，且 width/height 相除未防 height 为 0 的除零风险。', 'suggestion': '显式判断 width/height 是否有效，height 为 0 时回退默认宽高比。'}
-- {'file': 'package.json', 'line': 8, 'message': '"build": "tsc && vite build" 与 "typecheck": "tsc --noEmit" 语义重叠，tsconfig 已设 noEmit:true，build 中的 tsc 仅做类型检查但命名上易被误认为会产出文件。', 'suggestion': 'build 改为 "tsc --noEmit && vite build" 以消除歧义。'}
-- {'file': 'src/utils/math.ts', 'line': 31, 'message': 'randomInt(min, max) 采用 max+1 再 floor 的实现，当 max 接近 Number.MAX_SAFE_INTEGER 或为极大值时 max+1 会丢失精度，返回区间上限错误。', 'suggestion': '改用 Math.floor(min + Math.random() * (max - min + 1)) 并限制输入范围，或对极端值做说明。'}
+- {'file': 'src/utils/index.ts', 'line': 0, 'title': 'random() 是对 Math.random() 的无意义包装', 'description': 'random() 仅 return Math.random()，没有额外语义或参数，属于低价值抽象。', 'suggestion': '删除该函数，直接使用 Math.random()。'}
+- {'file': 'src/utils/index.ts', 'line': 0, 'title': 'Maybe/Nullable/Optional 三个别名语义重叠', 'description': 'Maybe<T>=T|null|undefined、Nullable<T>=T|null、Optional<T>=T|undefined 同时存在，增加心智负担且易混用。', 'suggestion': '只保留 Maybe 或 Nullable 一个，Optional 可直接用 TS 内建的可选/Partial 表达。'}
+- {'file': 'src/types/index.ts', 'line': 0, 'title': 'IUpdatable/IDisposable 使用 C# 风格 I 前缀', 'description': 'TypeScript 生态惯例不使用 I 前缀（eslint 生态亦不推荐），与项目其余接口命名（RendererConfig、AppConfig 等）不一致。', 'suggestion': '重命名为 Updatable/Disposable，保持命名一致。'}
+- {'file': 'src/utils/index.ts', 'line': 0, 'title': 'disposeObject 仅处理 Mesh，未覆盖 Sprite/Line/Points', 'description': 'traverse 中只对 THREE.Mesh 做 geometry/material 释放，Sprite、Line、Points 等同样持有 geometry 与 material 的对象会内存泄漏。', 'suggestion': '泛化到任意持有 geometry/material 的对象（如判断 object.geometry / object.material 存在即释放）。'}
+- {'file': 'src/utils/index.ts', 'line': 0, 'title': 'normalize 在 min===max 时静默返回 0 可能掩盖错误', 'description': '区间为零时直接返回 0 会让调用方无法区分『合法归一化结果』与『非法输入』，可能掩盖上游传参错误。', 'suggestion': '考虑返回 NaN 或显式抛错/加 JSDoc 说明约定，便于定位问题。'}
 
 ## 审查的代码
+- src/types/index.ts
+- src/utils/index.ts
+- .eslintrc.cjs
+- .prettierrc
+- .claude/manifest.json
 - package.json
 - tsconfig.json
 - vite.config.ts
-- index.html
-- src/types/scene.ts
-- src/utils/math.ts
-- .eslintrc.cjs
-- .prettierrc
 - src/index.ts
 - docs/Reqs/a8d042/48b6af/dev-notes.md
