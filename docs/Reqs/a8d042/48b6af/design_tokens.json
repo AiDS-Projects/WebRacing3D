@@ -1,44 +1,32 @@
 {
   "colors": {
     "primary": "#00D4FF",
-    "primaryHover": "#33DEFF",
-    "primaryActive": "#00B4D8",
-    "accent": "#FF3D71",
-    "success": "#2EE6A8",
-    "warning": "#FFB020",
-    "error": "#FF4D4F",
-    "bg": "#0A0E1A",
+    "primary_hover": "#33DEFF",
+    "bg": "#0A0E17",
     "surface": "#111827",
-    "surfaceElevated": "#1A2332",
-    "border": "#2A3446",
-    "text": "#F2F5FA",
-    "textSecondary": "#9AA6B8",
-    "textMuted": "#5A6478",
-    "overlay": "rgba(10, 14, 26, 0.72)"
+    "surface_alt": "#1A2233",
+    "text": "#E6EDF7",
+    "text_muted": "#8A97AD",
+    "error": "#FF4D5E",
+    "error_bg": "#2A1220",
+    "border": "#24304A",
+    "focus_ring": "#00D4FF"
   },
   "typography": {
     "base": "14px",
     "sm": "12px",
     "lg": "16px",
-    "heading": "20px",
+    "heading": "24px",
     "display": "32px",
-    "hudMono": "18px",
-    "fontFamily": "'Rajdhani', 'Orbitron', system-ui, sans-serif",
-    "monoFamily": "'JetBrains Mono', 'SFMono-Regular', monospace",
-    "weights": {
-      "regular": 400,
-      "medium": 500,
-      "semibold": 600,
-      "bold": 700
-    }
+    "font_family": "'Rajdhani', 'Orbitron', system-ui, sans-serif",
+    "mono": "'JetBrains Mono', 'Fira Code', monospace"
   },
   "spacing": {
     "xs": "4px",
     "sm": "8px",
     "md": "16px",
     "lg": "24px",
-    "xl": "32px",
-    "xxl": "48px"
+    "xl": "32px"
   },
   "radius": {
     "sm": "4px",
@@ -47,9 +35,9 @@
     "pill": "999px"
   },
   "shadow": {
-    "card": "0 4px 16px rgba(0, 0, 0, 0.45)",
-    "neonPrimary": "0 0 8px rgba(0, 212, 255, 0.55), 0 0 24px rgba(0, 212, 255, 0.25)",
-    "neonAccent": "0 0 8px rgba(255, 61, 113, 0.5), 0 0 24px rgba(255, 61, 113, 0.22)",
-    "focusRing": "0 0 0 3px rgba(0, 212, 255, 0.35)"
+    "sm": "0 1px 2px rgba(0,0,0,0.4)",
+    "md": "0 4px 12px rgba(0,0,0,0.5)",
+    "lg": "0 8px 24px rgba(0,0,0,0.6)",
+    "glow_primary": "0 0 12px rgba(0,212,255,0.35)"
   }
 }
