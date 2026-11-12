@@ -24,6 +24,8 @@
       "workOrderType": "skeleton",
       "classifier": {
         "name": "classify_ticket",
+        "forceScaffoldOnly": true,
+        "lockTicketType": "scaffold",
         "scaffoldOnlyKeywords": [
           "骨架",
           "skeleton",
@@ -31,7 +33,14 @@
           "目录结构",
           "类型定义"
         ],
-        "onScaffoldOnlyKeyword": "set_scaffold_only"
+        "onScaffoldOnlyKeyword": "set_scaffold_only",
+        "residualDirectories": [
+          "src/race",
+          "src/camera",
+          "src/physics",
+          "src/player"
+        ],
+        "onResidualDirectory": "ignore_and_cleanup"
       },
       "deliveryWhitelist": [
         "package.json",
@@ -43,6 +52,21 @@
         "src/types/index.ts",
         "src/utils/index.ts"
       ]
+    },
+    "generation": {
+      "generateCode": {
+        "scaffold": {
+          "match": "ticket.type == 'scaffold'",
+          "handler": "instantiate_scaffold_template",
+          "useLlm": false,
+          "mode": "deterministic",
+          "steps": [
+            "checkout_golden_template",
+            "variable_replacement",
+            "write_files_one_by_one"
+          ]
+        }
+      }
     },
     "scaffoldOnly": {
       "contextInjection": {
@@ -133,7 +157,9 @@
         "trigger": {
           "filesEmptyOrInvalid": true
         },
-        "onFilesInvalid": "retry",
+        "onFilesInvalid": "hard_fail",
+        "forbidSamePromptRetry": true,
+        "retryPolicy": "switch_to_deterministic_or_abort",
         "flow": [
           "acceptance_rejected",
           "rework"
@@ -158,6 +184,14 @@
           "race"
         ]
       }
+    },
+    "selftest": {
+      "scaffoldPassCondition": "byte_identical_to_golden_template_or_contains_nonempty_real_code",
+      "rejectEmptyShell": true,
+      "emptyShellPatterns": [
+        "console.log('xxx loaded')",
+        "console.log(\"xxx loaded\")"
+      ]
     },
     "validator": {
       "pathWhitelistHardGate": true,
