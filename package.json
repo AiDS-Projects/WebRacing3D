@@ -22,6 +22,17 @@
   "generator": {
     "entry": {
       "workOrderType": "skeleton",
+      "classifier": {
+        "name": "classify_ticket",
+        "scaffoldOnlyKeywords": [
+          "骨架",
+          "skeleton",
+          "统一入口",
+          "目录结构",
+          "类型定义"
+        ],
+        "onScaffoldOnlyKeyword": "set_scaffold_only"
+      },
       "deliveryWhitelist": [
         "package.json",
         "tsconfig.json",
@@ -32,6 +43,43 @@
         "src/types/index.ts",
         "src/utils/index.ts"
       ]
+    },
+    "scaffoldOnly": {
+      "contextInjection": {
+        "skipBusinessReferenceImplementation": true,
+        "bannedEntries": [
+          "types/track",
+          "VehiclePhysics",
+          "LapTracker"
+        ],
+        "keepOriginalTicketOnly": true
+      },
+      "fileTree": {
+        "fixedFiles": [
+          "src/core/",
+          "src/types/index.ts",
+          "src/utils/index.ts",
+          "src/index.ts",
+          "vite.config.ts",
+          "tsconfig.json"
+        ],
+        "template": {
+          "content": "export {}",
+          "todoComment": true
+        }
+      },
+      "syntaxConstraint": {
+        "bannedImports": [
+          "import * as THREE",
+          "import three"
+        ],
+        "bannedIdentifiers": [
+          "TrackPoint3D",
+          "LapResult",
+          "VehiclePhysicsConfig",
+          "CarInput"
+        ]
+      }
     },
     "cleanup": {
       "preGeneration": true,
@@ -123,7 +171,17 @@
         "src/main.ts",
         "src/types/index.ts",
         "src/utils/index.ts"
-      ]
+      ],
+      "contentSemanticGate": {
+        "enabled": true,
+        "perFileBannedIdentifiers": [
+          "TrackPoint3D",
+          "LapResult",
+          "VehiclePhysicsConfig",
+          "CarInput"
+        ],
+        "typesIndexCrossFileDuplicateCheck": true
+      }
     },
     "contextInjection": {
       "disableBusinessCodeRetrieval": true
