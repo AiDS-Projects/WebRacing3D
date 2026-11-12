@@ -12,7 +12,8 @@
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "screenshot": "playwright test tests/screenshots",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "verify": "node scripts/verify.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",

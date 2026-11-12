@@ -1,0 +1,108 @@
+{
+  "name": "ads-cli-pure-gen",
+  "version": "1.0.0",
+  "description": "Vite + TypeScript + Three.js 项目脚手架：目录结构、类型定义与共享工具层初始化",
+  "task": {
+    "id": "scaffold-init",
+    "title": "初始化项目脚手架与技术栈",
+    "objective": "搭建 Vite + TypeScript + Three.js 项目骨架，建立目录结构、类型定义与共享工具层，为后续模块提供统一入口。",
+    "stack": {
+      "bundler": "vite",
+      "language": "typescript",
+      "runtime": "node",
+      "renderer": "three.js",
+      "packageManager": "pnpm"
+    },
+    "acceptanceCriteria": [
+      "项目可通过 pnpm dev 启动并访问开发服务器",
+      "TypeScript 严格模式编译零错误",
+      "Three.js 场景能在入口页渲染",
+      "共享工具层具备统一导出入口 src/shared/index.ts",
+      "类型定义集中在 src/types 并通过路径别名引用"
+    ]
+  },
+  "structure": {
+    "src": {
+      "core": "渲染引擎核心（场景、相机、渲染器、循环）",
+      "scenes": "各场景模块",
+      "objects": "3D 对象与实体",
+      "systems": "游戏系统/逻辑子系统",
+      "types": "全局类型定义",
+      "shared": "共享工具层（数学、事件、资源加载等）",
+      "utils": "工具函数",
+      "assets": "静态资源",
+      "styles": "样式"
+    },
+    "entry": {
+      "html": "index.html",
+      "main": "src/main.ts"
+    }
+  },
+  "conventions": {
+    "aliases": {
+      "@": "src",
+      "@core": "src/core",
+      "@scenes": "src/scenes",
+      "@objects": "src/objects",
+      "@systems": "src/systems",
+      "@types": "src/types",
+      "@shared": "src/shared",
+      "@utils": "src/utils",
+      "@assets": "src/assets"
+    },
+    "naming": {
+      "components": "PascalCase",
+      "modules": "kebab-case",
+      "types": "PascalCase",
+      "constants": "UPPER_SNAKE_CASE",
+      "variables": "camelCase"
+    },
+    "exports": "每个模块通过 index.ts 统一导出，禁止深层相对路径跨模块引用"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "runtime": {
+      "three": "^0.160.0"
+    },
+    "dev": {
+      "vite": "^5.0.0",
+      "typescript": "^5.3.0",
+      "@types/three": "^0.160.0"
+    }
+  },
+  "tsconfig": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "modulePlan": [
+    {
+      "id": "shared",
+      "path": "src/shared",
+      "description": "共享工具层：事件总线、数学工具、资源加载器、常量",
+      "provides": ["EventBus", "MathUtils", "AssetLoader", "CONSTANTS"]
+    },
+    {
+      "id": "types",
+      "path": "src/types",
+      "description": "全局类型定义：场景实体、配置、生命周期接口",
+      "provides": ["Entity", "SceneConfig", "Lifecycle"]
+    },
+    {
+      "id": "core",
+      "path": "src/core",
+      "description": "渲染引擎核心：Renderer、SceneManager、GameLoop",
+      "provides": ["Renderer", "SceneManager", "GameLoop"]
+    }
+  ]
+}
