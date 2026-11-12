@@ -3,30 +3,32 @@
 ## 评分: 4/10 🚫 需修复
 
 ## 🔴 严重问题（必须修复）
-- {'file': 'package.json', 'line': None, 'severity': 'critical', 'title': '运行时依赖与工具链依赖全部缺失', 'description': "代码中 `src/main.ts` 使用 `import * as THREE from 'three'`，`src/types/index.ts` 使用 `import type * as THREE from 'three'`，且项目用 TypeScript 编写，但 package.json 的 devDependencies 仅包含 `@playwright/test` 与 `vite`，没有 `dependencies` 字段，也缺少 `three`、`typescript`、`@types/three`。安装后 `vite build` 与类型检查将直接失败。", 'suggestion': '补充 `three`、`typescript`、`@types/three`（three 为运行时依赖，建议放入 dependencies 或至少 devDependencies），并确保 `npm install` 后能通过构建。'}
-- {'file': 'src/index.ts', 'line': 1, 'severity': 'critical', 'title': 'src/index.ts 不是可编译的源代码', 'description': '该文件内容是一段解释「无法按要求修改」的英文对话文本（含 Markdown 表格、反引号、`src/index.ts:245` 引用等），不是合法的 TypeScript 源码，无法通过编译。且该文件路径不在 deliveryWhitelist 与 validator.whitelist 中（白名单只有 `src/types/index.ts`、`src/utils/index.ts` 等），与 generator 配置自相矛盾。', 'suggestion': '删除该占位文本，或按脚手架设计落地为真正的入口/导出文件；确保生成器白名单与实际文件树一致。'}
-- {'file': 'package.json', 'line': None, 'severity': 'critical', 'title': 'generator 配置与 src/index.ts 语义不一致导致路由失效', 'description': 'package.json 的 generator.routing.skeletonMarkerFiles 为 [vite.config.ts, index.html, src/main.ts]，而 src/index.ts 文本声称存在 253 行渲染应用与入口 bootstrap，二者描述的产物完全不同。generator 是实际 source of truth，但清理目录 `removeDirectories` 声明删除 4 个目录（camera/physics/player/race），实际磁盘上还存在 `src/camera/FollowCamera.ts`、`src/player/PlayerCar.ts`、`src/race/LapTracker.ts`，说明 preGeneration cleanup 并未实际执行或未生效。', 'suggestion': '统一 generator 配置与实际文件树；确认 cleanup 是否真正运行，并明确 src/index.ts 的归属（入口 or 类型聚合），消除路由判断歧义。'}
+- {'file': 'package.json', 'line': 'devDependencies', 'title': '缺少 three 运行时依赖，构建必然失败', 'description': "src/main.ts 使用 `import * as THREE from 'three'`，src/types/index.ts 使用 `THREE.Color/ToneMapping/Texture`，vite.config.ts 的 manualChunks 与 optimizeDeps.include 也显式引用 'three'，但 package.json 仅声明了 @playwright/test 和 vite，完全没有 three 及 @types/three。安装依赖后 dev/build 会因找不到模块 three 而崩溃。three 属于运行时依赖，应放入 dependencies 而非 devDependencies，并补充 @types/three。"}
+- {'file': 'src/main.ts', 'line': 'checkCrossFileDuplicates', 'title': '跨文件重复检查用 includes 判断，将“引用”误判为“重复定义”', 'description': 'checkCrossFileDuplicates 对每个已声明类型名调用 `content.includes(name)`。任何文件只要在函数签名/注解中引用类型名（如 utils 中使用 Vec3），就会被误报为“重复定义了类型”。这会让校验器对正常引用产生大量假阳性，导致 scaffold 校验永远无法通过。应使用与 extractDeclarations 相同的声明语法正则进行匹配，而非子串包含。'}
+- {'file': 'src/main.ts', 'line': 'generateFileContent', 'title': '对 tsconfig.json 生成 `export {}`，输出非法 JSON', 'description': "SCAFFOLD_FILE_TREE 包含 'tsconfig.json' 与 'vite.config.ts'，generateFileContent 对非目录路径一律返回 SCAFFOLD_TEMPLATE（`export {}`）。tsconfig.json 是 JSON 文件，`export {}` 是非法 JSON，生成的配置必然损坏且无法被解析。生成器应对 .json 与 .ts 文件区分内容模板。"}
+- {'file': 'src/main.ts', 'line': '1', 'title': 'main.ts 自身使用被禁止的 `import * as THREE`，且嵌入完整 ProductAgent 流水线，违反 scaffoldOnly 约束', 'description': '脚手架语法约束 bannedImports 明确禁止 `import * as THREE` 与 `import three`，validateScaffoldOutput 的正则 `/import\\s+\\*\\s+as\\s+THREE/` 会命中本文件第 1 行，即 main.ts 一旦进入校验即被自身规则拒绝。同时该“骨架”文件实际内嵌了 classifyTicket/buildFileTree/runProductAgent 等完整规划器逻辑，与 SCAFFOLD_TEMPLATE 宣称的“`export {}` 占位、不引入业务模块”目标自相矛盾，存在明显范围失控与语义错位。'}
 
 ## 🟡 警告（建议修复）
-- {'file': 'vite.config.ts', 'line': None, 'severity': 'warning', 'title': "base: './' 相对路径可能导致部署路由问题", 'description': "`base: './'` 会生成相对路径资源引用，在 SPA 深层路由刷新或带 history 路由时，静态资源路径会相对于当前 URL 解析而 404；若部署在根路径应使用 '/'。", 'suggestion': '根据实际部署路径确定 base，或改用环境变量 `process.env.BASE_URL` 按需配置。'}
-- {'file': 'vite.config.ts', 'line': None, 'severity': 'warning', 'title': '开发服务器暴露到公网且开启全量 CORS', 'description': "`server.host: '0.0.0.0'` 使开发服务器监听所有网卡，配合 `cors: true` 允许任意来源跨域访问，存在被局域网扫描/注入的暴露风险。", 'suggestion': "默认 `host: '127.0.0.1'`，仅在需要局域网联调时显式开启；cors 按需限定 origin。"}
-- {'file': 'vite.config.ts', 'line': None, 'severity': 'warning', 'title': 'chunkSizeWarningLimit: 1024 掩盖了 three 体积问题', 'description': '将警告阈值抬高到 1024KB 只是屏蔽提示，并未解决 three 全量引入导致的包体积问题；`manualChunks` 单独拆分 three 仍会产出超大 chunk。', 'suggestion': "使用按需导入（`import { Scene } from 'three'`）配合 tree-shaking，或配置更细的 manualChunks，而非简单调高阈值。"}
-- {'file': 'package.json', 'line': None, 'severity': 'warning', 'title': '包名与描述和实际项目不符', 'description': 'name 为 `ads-game-ui`，description 为「基础游戏 UI：速度表、当前圈数、计时器」，与 WebRacing3D 仓库及脚手架（Three.js 场景/相机/物理/赛车）定位不一致，易误导维护者。', 'suggestion': '统一 name/description 与仓库及脚手架目标一致。'}
-- {'file': 'package.json', 'line': None, 'severity': 'warning', 'title': 'playwright 脚本缺少配置文件与测试目录', 'description': 'scripts 中定义 `test`、`test:headed`、`test:ui`、`screenshot`、`report` 均依赖 `playwright test`，但未提供 `playwright.config.ts`，且 `screenshot` 指向 `tests/screenshots` 目录在当前产物中未见。', 'suggestion': '补齐 playwright.config.ts 与测试目录，或移除未实现的脚本，避免 `npm test` 直接报错。'}
-- {'file': 'package.json', 'line': None, 'severity': 'warning', 'title': 'generator 编排配置堆叠在 package.json 中', 'description': 'cleanup/routing/base_stages/validator/rework 等生成器状态机配置全部以 JSON 形式嵌入 package.json，属于非标准做法，可维护性差且易与真实产物脱节（已出现上述不一致）。', 'suggestion': '将生成器配置抽离到独立的配置模块或脚本中，保持 package.json 职责单一。'}
+- {'file': 'vite.config.ts', 'line': 'build.sourcemap', 'title': '生产构建开启 sourcemap 泄露源码', 'description': "`sourcemap: true` 会将完整源代码映射打进生产产物，便于攻击者还原源码逻辑。生产环境应设为 false 或 'hidden'，仅保留 stack trace 定位能力。"}
+- {'file': 'src/main.ts', 'line': 'classifyTicket', 'title': '分类器子串匹配过于粗糙且冗余', 'description': "`ticket.raw.toLowerCase().includes(keyword.toLowerCase())` 为朴素子串匹配，'skeleton' 会命中 'skeletonizer' 等普通英文单词造成误分类；同时对 'skeleton' 等纯小写关键词重复调用 toLowerCase() 属无意义操作，中文关键词更无需大小写归一化。"}
+- {'file': 'src/main.ts', 'line': 'extractDeclarations', 'title': '声明提取正则遗漏 re-export 与 export default', 'description': "正则仅覆盖 `export type|interface|const|class|enum|function`，无法识别 `export { Foo } from './foo'`、`export type { Bar }`、`export default` 等语法，导致这些导出名不会被纳入跨文件重复检查，检查存在盲区。"}
+- {'file': 'src/main.ts', 'line': 'SCAFFOLD_FILE_TREE', 'title': '固定文件树与白名单不一致', 'description': "SCAFFOLD_FILE_TREE 含 'src/index.ts'、目录 'src/core/'，而 generator.validator 白名单与 deliveryWhitelist 均为 'src/main.ts' 且不含 'src/index.ts'。文件树与白名单的入口文件命名（index.ts vs main.ts）不一致，会造成路径校验与交付清单相互矛盾。"}
+- {'file': 'vite.config.ts', 'line': 'server.port', 'title': '硬编码魔法值', 'description': '端口 5173、chunkSizeWarningLimit 1500 等为硬编码魔法数字，缺乏集中配置或注释说明，维护时难以追溯其取值依据。'}
+- {'file': 'vite.config.ts', 'line': 'server.open', 'title': 'open: true 强制自动打开浏览器', 'description': '在 CI 或多次并行 dev 场景下，自动拉起浏览器窗口会造成干扰。建议改为 false 或通过环境变量控制。'}
 
 ## 🟢 建议（可选优化）
-- {'file': 'src/types/index.ts', 'line': None, 'severity': 'suggestion', 'title': '类型模块混入运行时常量', 'description': '`src/types/index.ts` 以 `import type` 开头、定位为纯类型层，却导出了运行时常量 `PRE_GENERATION_CLEANUP_DIRS` 与状态机类型，违背「类型与实现分离」边界。', 'suggestion': '将运行时常量移到 `src/utils/` 或独立常量模块，types 目录只保留纯类型声明。'}
-- {'file': 'src/types/index.ts', 'line': None, 'severity': 'suggestion', 'title': '索引签名可用 Record 替代', 'description': '`AssetMap` 与 `EventMap` 使用 `[id: string]: ...` 索引签名，语义不如 `Record<string, X>` 明确，且对 null/undefined 安全提示较弱。', 'suggestion': '改用 `Record<string, ...>` 并配合 `strict`/`noUncheckedIndexedAccess` 提升类型安全。'}
-- {'file': 'src/types/index.ts', 'line': None, 'severity': 'suggestion', 'title': 'Vec3 与 THREE.Vector3 语义重复', 'description': '自定义可序列化 `Vec3` 与 THREE.Vector3 概念重叠，缺少说明为何需要可序列化版本，易在使用时混淆转换。', 'suggestion': '在注释中明确 Vec3 的序列化用途，或提供 Vec3 与 THREE.Vector3 的转换工具函数。'}
-- {'file': 'src/types/index.ts', 'line': None, 'severity': 'suggestion', 'title': '注释与实际目录数量不符', 'description': '清理逻辑相关文档声称「五个错误目录」，但 `PRE_GENERATION_CLEANUP_DIRS` 仅列出 4 个（camera/physics/player/race）。', 'suggestion': '修正注释为「四个」或补齐缺失目录，保持文档与代码一致。'}
-- {'file': 'vite.config.ts', 'line': None, 'severity': 'suggestion', 'title': 'assetsInclude 对 gltf/glb/ktx2 处理语义不完整', 'description': 'gltf/glb 在 Vite 中默认按 URL 资源处理即可，显式声明无额外收益；ktx2 纹理实际需要 BasisTextureLoader 运行时解码，仅加入 assetsInclude 无法保证正确加载。', 'suggestion': '精简 assetsInclude 为真正需要按静态资源处理的扩展，并在文档中说明 ktx2 的加载链路。'}
+- {'file': 'vite.config.ts', 'line': 'plugins', 'title': '空 plugins 数组冗余', 'description': '`plugins: []` 可整体省略，保留空数组无实际作用，反而暗示未来需在此处扩展但当前无插件。'}
+- {'file': 'src/types/index.ts', 'line': 'ColorLike', 'title': 'number 作为颜色类型语义歧义', 'description': '`ColorLike = string | number | THREE.Color` 中的 number 未说明是十六进制整型、RGB 分量还是索引，缺乏注释约束，调用方难以确定取值范围。'}
+- {'file': 'package.json', 'line': 'name', 'title': '包名与项目/描述不一致', 'description': "项目为 WebRacing3D，包名为 'ads-game-ui'，description 又写“基础游戏 UI：速度表…”，三者指向混乱，建议统一命名与描述口径。"}
+- {'file': 'src/main.ts', 'line': 'buildFileTree', 'title': '冗余展开拷贝', 'description': '`return [...SCAFFOLD_FILE_TREE]` 的展开拷贝无必要，直接 `return SCAFFOLD_FILE_TREE` 即可，且避免误导读者以为存在可变性保护需求。'}
+- {'file': 'package.json', 'line': 'generator.deliveryWhitelist', 'title': '白名单引用未交付文件', 'description': 'deliveryWhitelist 与 validator 白名单列出 tsconfig.json、tsconfig.node.json、index.html，但当前展示内容中这些文件均未实际交付，清单与交付物不匹配，需补齐或从白名单移除。'}
 
 ## 审查的代码
 - vite.config.ts
 - package.json
 - src/main.ts
-- src/index.ts
 - src/types/index.ts
 - src/types/input.ts
+- src/types/scene.ts
+- src/utils/index.ts
 - docs/Reqs/a8d042/48b6af/dev-notes.md
