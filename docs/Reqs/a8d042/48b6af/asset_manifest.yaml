@@ -1,11 +1,49 @@
 # asset_manifest.yaml — 初始化项目脚手架与技术栈
-# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
 assets:
-  - id: asset_001
+  - id: nav_home
     type: icon
-    description: icon: 待补充
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_002
+    description: 首页导航图标 24px outline 线性风格
+    source_hint: iconify
+    status: pending
+  - id: nav_settings
+    type: icon
+    description: 设置导航图标 24px outline
+    source_hint: iconify
+    status: pending
+  - id: icon_play
+    type: icon
+    description: 开始/继续按钮图标 24px filled
+    source_hint: iconify
+    status: pending
+  - id: icon_pause
+    type: icon
+    description: 暂停按钮图标 24px filled
+    source_hint: iconify
+    status: pending
+  - id: icon_refresh
+    type: icon
+    description: 重新加载图标 24px outline
+    source_hint: iconify
+    status: pending
+  - id: icon_close
+    type: icon
+    description: 关闭/取消图标 24px outline
+    source_hint: iconify
+    status: pending
+  - id: icon_warning
+    type: icon
+    description: 警告状态图标 24px filled
+    source_hint: iconify
+    status: pending
+  - id: icon_error
+    type: icon
+    description: 错误状态图标 24px filled
+    source_hint: iconify
+    status: pending
+  - id: empty_state
     type: illustration
-    description: illustration: 空状态图（400x300）
-    status: pending  # 待美术Agent确认来源和规格
+    description: 空状态插画 400x300 科幻赛道主题
+    source_hint: ai_generate
+    status: pending

@@ -1,31 +1,36 @@
 {
   "colors": {
-    "bg": "#0A0E17",
+    "primary": "#00D4FF",
+    "primaryHover": "#33DEFF",
+    "primaryActive": "#00B4D8",
+    "accent": "#FF3D71",
+    "success": "#2EE6A8",
+    "warning": "#FFB020",
+    "error": "#FF4D4F",
+    "bg": "#0A0E1A",
     "surface": "#111827",
-    "surface_elevated": "#1B2436",
-    "overlay": "rgba(10, 14, 23, 0.72)",
-    "primary": "#22D3EE",
-    "primary_soft": "rgba(34, 211, 238, 0.16)",
-    "secondary": "#F97316",
-    "success": "#34D399",
-    "danger": "#EF4444",
-    "text_primary": "#E5E7EB",
-    "text_secondary": "#9CA3AF",
-    "text_on_accent": "#06121A",
-    "border": "#2A3444",
-    "border_focus": "#22D3EE"
+    "surfaceElevated": "#1A2332",
+    "border": "#2A3446",
+    "text": "#F2F5FA",
+    "textSecondary": "#9AA6B8",
+    "textMuted": "#5A6478",
+    "overlay": "rgba(10, 14, 26, 0.72)"
   },
   "typography": {
-    "font_family_base": "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif",
-    "font_family_mono": "'JetBrains Mono', 'SFMono-Regular', Consolas, monospace",
     "base": "14px",
     "sm": "12px",
     "lg": "16px",
-    "heading": "22px",
-    "weight_regular": "400",
-    "weight_medium": "500",
-    "weight_bold": "700",
-    "line_height": "1.5"
+    "heading": "20px",
+    "display": "32px",
+    "hudMono": "18px",
+    "fontFamily": "'Rajdhani', 'Orbitron', system-ui, sans-serif",
+    "monoFamily": "'JetBrains Mono', 'SFMono-Regular', monospace",
+    "weights": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    }
   },
   "spacing": {
     "xs": "4px",
@@ -42,9 +47,9 @@
     "pill": "999px"
   },
   "shadow": {
-    "sm": "0 1px 2px rgba(0, 0, 0, 0.4)",
-    "md": "0 4px 12px rgba(0, 0, 0, 0.5)",
-    "lg": "0 12px 32px rgba(0, 0, 0, 0.6)",
-    "glow_primary": "0 0 16px rgba(34, 211, 238, 0.45)"
+    "card": "0 4px 16px rgba(0, 0, 0, 0.45)",
+    "neonPrimary": "0 0 8px rgba(0, 212, 255, 0.55), 0 0 24px rgba(0, 212, 255, 0.25)",
+    "neonAccent": "0 0 8px rgba(255, 61, 113, 0.5), 0 0 24px rgba(255, 61, 113, 0.22)",
+    "focusRing": "0 0 0 3px rgba(0, 212, 255, 0.35)"
   }
 }
