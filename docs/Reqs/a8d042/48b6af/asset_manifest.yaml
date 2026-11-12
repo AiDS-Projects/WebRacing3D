@@ -1,19 +1,25 @@
 # asset_manifest.yaml — 初始化项目脚手架与技术栈
-# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
-# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+# 由 ArtistAgent 落地更新
+# status: sourced=命中资产库 / placeholder=占位图待替换 / manual_required=需人工提供 / not_found=未命中
 assets:
   - id: favicon
     type: icon
     description: 应用 favicon，16x16 与 32x32 两档
-    source_hint: ai_generate
-    status: pending
-  - id: error_warning
-    type: icon
-    description: 错误提示告警图标，48px outline，用于 ErrorOverlay
-    source_hint: iconify
-    status: pending
+    status: sourced
+    path: icons/tabler/favicon.svg
+    matched_name: favicon
+    asset_db_id: AST-004454
+    match_score: 1.0
   - id: logo_placeholder
     type: icon
     description: 项目占位 Logo，64x64，用于加载层与后续启动页
-    source_hint: ai_generate
-    status: pending
+    status: sourced
+    path: icons/tabler/placeholder.svg
+    matched_name: placeholder
+    asset_db_id: AST-006363
+    match_score: 0.85
+  - id: error_warning
+    type: icon
+    description: 错误提示告警图标，48px outline，用于 ErrorOverlay
+    status: placeholder
+    path: docs/Reqs/a8d042/48b6af/assets/placeholder/error_warning.png
