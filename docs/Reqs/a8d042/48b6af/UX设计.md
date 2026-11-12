@@ -5,103 +5,103 @@
 ## 交互流程图
 
 ```mermaid
-本工单为脚手架搭建，无业务页面跳转，唯一『界面』是全屏渲染画布。流程描述如下：
-
 ```mermaid
 stateDiagram-v2
-    [*] --> Boot: 访问 localhost:5173
-    Boot --> InitRenderer: 加载 main.ts
-    InitRenderer --> InitScene: 创建 Renderer/Scene/Camera
-    InitScene --> Ready: 渲染空白场景 + 启动主循环
-    InitRenderer --> Error: WebGL 不支持 / 初始化异常
-    Ready --> Resize: 窗口尺寸变化
-    Resize --> Ready: 更新相机宽高比
-    Error --> [*]: 展示错误提示
-    Ready --> [*]
+    [*] --> 应用启动: src/main.ts 唯一入口
+    应用启动 --> 配置加载: 读取 src/config 常量与参数
+    配置加载 --> 渲染器初始化: 创建 renderer / scene / camera
+    渲染器初始化 --> WebGL检测: 检测 WebGL2/WebGL 可用性
+    WebGL检测 --> 错误态: 不支持 WebGL
+    WebGL检测 --> 主循环启动: 支持
+    主循环启动 --> 运行中: requestAnimationFrame 驱动
+    运行中 --> 运行中: 逐帧执行 update 钩子 → render 钩子
+    运行中 --> 暂停态: 页面失焦/隐藏 (预留)
+    暂停态 --> 运行中: 页面聚焦 (预留)
+    运行中 --> 错误态: 运行时异常/上下文丢失
+    错误态 --> 应用启动: 用户触发重试
+    运行中 --> 应用卸载: 页面关闭 / HMR 热更新
+    应用卸载 --> [*]
+    错误态 --> [*]
 ```
-
-说明：该流程对应『渲染器/场景/相机创建入口 + 主循环骨架』，其中 Boot→Ready 为开发启动路径；Error 分支用于验收标准 2 中『控制台 error=0』的兜底；Resize 为后续响应式规则所需的最小闭环。
 ```
 
 ## 组件线框说明
 
-主要区域与组件结构（自上而下，全屏单页）：
+本工单为脚手架验证，无玩法 UI，仅建立最小可验证结构与后续挂载骨架。整体为单屏全屏 Canvas 布局，按 z 轴分层：
 
-1. 游戏视口容器（GameViewport，占满 100vw/100vh）
-   - 承载 Three.js 渲染器 canvas，作为唯一渲染目标
-   - 无任何业务 UI 叠加，纯渲染画布
+1. Canvas 渲染层（底层，全屏）
+   - 区域：全视口 100vw × 100vh
+   - 内容：Three.js WebGLRenderer 输出的空白场景（含 scene + camera 初始化成功即可视化验证）
+   - 职责：纯渲染，不承载交互逻辑
 
-2. 调试信息浮层（DebugOverlay，仅开发环境显示）
-   - 位置：左上角
-   - 内容：FPS 实时值、帧耗时（用于验收标准 8 的 60fps 采样验证）
-   - 结构：半透明背景条 + 等宽字体文本，点击/拖拽不可交互
+2. 启动/加载占位层（中层，覆盖 Canvas 之上）
+   - 组件：LoadingOverlay（半透明遮罩 + 居中 spinner）
+   - 用途：覆盖「应用启动 → 渲染器初始化 → 主循环就绪」这一窗口期，避免用户看到未初始化的黑屏
+   - 状态：init（初始化中）→ ready（淡出移除）
 
-3. 初始化遮罩层（BootOverlay，仅初始化期间存在）
-   - 覆盖整个视口，渲染器就绪后自动淡出
-   - 内容：居中 Loading 提示文本（如『场景初始化中…』）
+3. 错误提示层（顶层，按需出现）
+   - 组件：ErrorOverlay（居中面板 + 文案 + 重试按钮）
+   - 用途：WebGL 不支持、渲染器初始化失败、运行时上下文丢失三类场景
+   - 结构：标题文案区 + 错误原因说明 + 主操作按钮（重试）
 
-4. 错误提示浮层（ErrorOverlay，仅异常时显示）
-   - 居中卡片：错误原因文案 + 重试按钮
-   - 触发条件：WebGL 上下文创建失败
+4. HUD 预留挂载层（顶层容器，本工单仅占位不实现）
+   - 组件：HudRoot（绝对定位空容器，透明 pointer-events:none）
+   - 用途：为后续速度表/圈数/计时器等模块提供统一挂载点，避免各模块各自创建根节点
 
-核心组件：GameViewport（全屏 canvas 容器）、DebugOverlay（FPS 浮层）、BootOverlay（加载遮罩）、ErrorOverlay（错误卡片）。
+5. 调试信息条（可选，开发环境）
+   - 组件：DebugBar（左下角，展示 FPS / frame time / 渲染对象数）
+   - 用途：验证验收标准第 8 条（空白场景 ≥ 60fps）
 
 ## 交互状态定义
 
-本工单可交互组件极少，仅 ErrorOverlay 的重试按钮具备交互；其余组件只展示状态：
+本工单可交互组件仅两类，其余为被动展示层：
 
-1. GameViewport（渲染画布）
-   - normal：正常渲染空白场景
-   - loading：渲染器/场景初始化中，被 BootOverlay 覆盖
-   - error：WebGL 不可用，被 ErrorOverlay 覆盖
-   - resize：窗口尺寸变化时重建相机宽高比（非用户点击状态）
+### 重试按钮（RetryButton，错误态使用）
+- normal：默认可点击，文案「重试」
+- hover：鼠标悬停，背景亮度 +5%
+- active：按下 scale 0.95 + 亮度变化
+- disabled：重试进行中禁用，opacity 0.45 + cursor not-allowed，防止重复点击
+- loading：显示 spinner，文案「正在重新初始化…」
+- （success/empty 状态本阶段不适用）
 
-2. ErrorOverlay 重试按钮
-   - normal：可点击，文案『重试』
-   - hover：指针悬停，背景微亮
-   - active：按下，scale 0.95 + 亮度变化
-   - disabled：无（错误恢复不需要禁用态）
-   - loading：点击后重新初始化渲染器，按钮显示 spinner、禁止重复点击
-   - success：恢复成功，遮罩整体淡出（150ms）
+### 应用根（AppRoot，即整屏游戏画布）
+- normal/运行中：主循环稳定驱动，空白场景持续渲染
+- loading（初始化）：显示 LoadingOverlay，期间无帧内容输出，防黑屏
+- error：显示 ErrorOverlay，主循环暂停，不产生 requestAnimationFrame 空转
+- paused（预留）：页面失焦时暂停 update 渲染，聚焦恢复，用于后续节流
+- ready：LoadingOverlay 淡出，进入纯渲染态
 
-3. DebugOverlay（FPS 浮层）
-   - normal：显示实时 FPS
-   - empty：无（始终有数据）
-   - error：无
-   - 说明：纯只读，无 hover/active/disabled/loading 状态
+### 调试信息条（DebugBar，可选）
+- normal：显示 FPS / frame time / 对象数
+- empty：数据未就绪时显示占位「--」
 
-4. BootOverlay（初始化遮罩）
-   - loading：显示『场景初始化中…』
-   - success：淡出消失（150ms fade out）
-   - error：转交 ErrorOverlay 处理
+### 状态切换规则
+- LoadingOverlay 出现/消失用 fade 150-200ms
+- ErrorOverlay 出现从下向上 + fade 200ms，消失 fade out 150ms
+- 运行中 → 错误态为单向，仅能通过重试按钮回到「应用启动」
 
 ## 响应式/适配规则
 
-断点定义：mobile < 768px / tablet 768-1024px / desktop > 1024px。
+全屏游戏画布以视口自适应为唯一布局原则，无内容换行需求：
 
-本工单仅一个全屏画布，响应式规则集中在画布尺寸与浮层定位：
+- mobile < 768px：Canvas 填满视口，devicePixelRatio 按屏幕实际值上限 2 处理（避免高分屏过重），错误面板宽度 80%，字体与按钮按触控友好尺寸（最小点击区 44×44px）
+- tablet 768-1024px：Canvas 填满视口，错误面板宽度 50%，居中
+- desktop > 1024px：Canvas 填满视口，错误面板固定最大宽 480px 居中
 
-1. GameViewport
-   - 全断点统一：canvas 始终填满视口（100vw/100vh），通过 resize 事件同步 renderer.setSize 与 camera.aspect
-   - 禁止固定像素尺寸，保证不同分辨率下渲染不拉伸
-
-2. DebugOverlay
-   - mobile：左上角，字号缩小，内容精简为 FPS 单值
-   - tablet/desktop：左上角，可扩展显示 FPS + 帧耗时
-
-3. BootOverlay / ErrorOverlay
-   - 全断点统一居中
-   - ErrorOverlay 卡片宽度：mobile 90vw，tablet 60vw，desktop 480px 固定
-
-4. 预留：后续 HUD/面板/触屏虚拟按键在此断点体系下叠加，本工单不实现。
+通用规则：
+1. 监听 window resize，动态更新 renderer.setSize 与 camera.aspect，保证任意断点无拉伸变形
+2. 页面失焦（visibilitychange / blur）暂停主循环，聚焦恢复（预留节流逻辑）
+3. 全屏画布优先，不引入滚动条；错误面板为唯一滚动例外
+4. 所有绝对定位层（Loading/Error/HudRoot）覆盖同一坐标系，随视口同步缩放
 
 ## UI 资产清单（初稿）
 
-本工单为脚手架搭建，PRD 边界条件明确排除美术资产导入，因此资产清单极简，仅保留开发/验证所需最小项：
+本工单为脚手架验证，按边界条件不引入美术资产，仅保留必要的功能图标占位：
 
-- icon: refresh（ErrorOverlay 重试按钮图标，24px，outline 风格，用于 WebGL 初始化失败重试）
-- icon: warning（ErrorOverlay 错误提示图标，24px，outline 风格，用于异常提示）
-- illustration: 无（本工单无空状态/列表等场景）
-- image: 无（本工单无横幅、插画等需求）
+- icon: warning（WebGL 不支持 / 初始化失败错误提示，24px，outline 风格，用于 ErrorOverlay 标题左侧）
+- icon: refresh（重试按钮图标，24px，outline 风格，loading 时旋转为 spinner）
+- icon: info（调试信息条占位图标，16px，outline 风格，可省略）
+- illustration: empty-state（本阶段不适用，后续列表类模块预留，400×300）
+- image: 无（本工单明确禁止美术资产导入）
 
-说明：FPS 浮层、Loading 遮罩均为纯文本实现，无需图标/图片资源。上述两个 icon 可在无资源时用文本『重试』与符号『!』替代，避免本工单引入资产依赖。
+补充说明：以上 icon 建议暂以系统字体符号或内联 SVG 占位，正式美术资产留待后续 UI 模块工单统一交付。
