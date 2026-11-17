@@ -98,7 +98,7 @@ const BASE_GRIP_RATE = 8;
 export class VehiclePhysics {
   readonly config: VehiclePhysicsConfig;
 
-  private state: VehicleState;
+  private _state: VehicleState;
   private collision: TrackCollisionSource | null = null;
 
   constructor(
@@ -107,7 +107,7 @@ export class VehiclePhysics {
   ) {
     this.config = { ...DEFAULT_VEHICLE_CONFIG, ...config };
     this.collision = collision ?? null;
-    this.state = {
+    this._state = {
       position: { x: 0, y: 0 },
       heading: 0,
       velocityAngle: 0,
@@ -117,7 +117,7 @@ export class VehiclePhysics {
   }
 
   get state(): VehicleState {
-    return this.state;
+    return this._state;
   }
 
   setCollisionSource(source: TrackCollisionSource | null): void {
@@ -125,7 +125,7 @@ export class VehiclePhysics {
   }
 
   reset(position?: Partial<Vec2>, heading = 0): void {
-    this.state = {
+    this._state = {
       position: { x: position?.x ?? 0, y: position?.y ?? 0 },
       heading,
       velocityAngle: heading,
@@ -136,7 +136,7 @@ export class VehiclePhysics {
 
   update(dt: number, input: VehicleInput): VehicleState {
     const cfg = this.config;
-    const s = this.state;
+    const s = this._state;
     dt = clamp(dt, 0, 0.1);
 
     // 1. 转向平滑
