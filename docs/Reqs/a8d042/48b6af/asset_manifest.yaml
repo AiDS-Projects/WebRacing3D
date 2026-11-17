@@ -15,8 +15,12 @@ assets:
     description: 重试按钮图标 24px outline 风格
     status: placeholder
     path: docs/Reqs/a8d042/48b6af/assets/placeholder/retry.png
+    aigc_tag: [IMG_PENDING:IMG-20261117-a888ea]
+    note: AIGC 已投递，生成完成后自动回填覆盖占位图
   - id: error_state
     type: illustration
     description: 初始化失败/WebGL 不支持错误插画 400x300 扁平风格
     status: placeholder
     path: docs/Reqs/a8d042/48b6af/assets/placeholder/error_state.png
+    aigc_tag: [IMG_PENDING:IMG-20261117-36fd99]
+    note: AIGC 已投递，生成完成后自动回填覆盖占位图
