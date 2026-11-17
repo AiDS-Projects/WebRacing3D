@@ -1,43 +1,16 @@
 {
   "colors": {
-    "primary": "#00D4FF",
-    "primary_hover": "#33DEFF",
-    "bg": "#0A0E17",
-    "surface": "#111827",
-    "surface_alt": "#1A2233",
-    "text": "#E6EDF7",
-    "text_muted": "#8A97AD",
-    "error": "#FF4D5E",
-    "error_bg": "#2A1220",
-    "border": "#24304A",
-    "focus_ring": "#00D4FF"
+    "primary": "#4F46E5",
+    "bg": "#F9FAFB",
+    "text": "#111827"
   },
   "typography": {
-    "base": "14px",
-    "sm": "12px",
-    "lg": "16px",
-    "heading": "24px",
-    "display": "32px",
-    "font_family": "'Rajdhani', 'Orbitron', system-ui, sans-serif",
-    "mono": "'JetBrains Mono', 'Fira Code', monospace"
+    "base": "14px"
   },
   "spacing": {
-    "xs": "4px",
-    "sm": "8px",
-    "md": "16px",
-    "lg": "24px",
-    "xl": "32px"
+    "md": "16px"
   },
   "radius": {
-    "sm": "4px",
-    "md": "8px",
-    "lg": "12px",
-    "pill": "999px"
-  },
-  "shadow": {
-    "sm": "0 1px 2px rgba(0,0,0,0.4)",
-    "md": "0 4px 12px rgba(0,0,0,0.5)",
-    "lg": "0 8px 24px rgba(0,0,0,0.6)",
-    "glow_primary": "0 0 12px rgba(0,212,255,0.35)"
+    "md": "8px"
   }
 }
