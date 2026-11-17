@@ -1,19 +1,22 @@
 # asset_manifest.yaml — 构建 3D 环形赛道场景
-# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
-# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+# 由 ArtistAgent 落地更新
+# status: sourced=命中资产库 / placeholder=占位图待替换 / manual_required=需人工提供 / not_found=未命中
 assets:
   - id: camera_view
     type: icon
     description: 相机视角切换图标 24px outline
-    source_hint: iconify
-    status: pending
+    status: sourced
+    path: icons/lucide/camera.svg
+    matched_name: camera
+    asset_db_id: AST-000286
+    match_score: 0.85
   - id: debug_panel
     type: icon
     description: 调试面板开关齿轮图标 24px outline
-    source_hint: iconify
-    status: pending
+    status: placeholder
+    path: docs/Reqs/a8d042/c4c38e/assets/placeholder/debug_panel.png
   - id: retry
     type: icon
     description: 重试/重新生成图标 24px outline
-    source_hint: iconify
-    status: pending
+    status: placeholder
+    path: docs/Reqs/a8d042/c4c38e/assets/placeholder/retry.png
