@@ -1,26 +1,32 @@
 {
   "colors": {
-    "accelerate": "#22C55E",
-    "brake": "#EF4444",
-    "steer": "#3B82F6",
-    "surface": "rgba(255,255,255,0.14)",
-    "surface_pressed": "rgba(255,255,255,0.30)",
-    "border": "rgba(255,255,255,0.35)",
-    "icon": "#FFFFFF",
-    "hud_bg": "rgba(0,0,0,0.0)",
-    "status_bg": "rgba(0,0,0,0.35)",
-    "status_text": "#FFFFFF",
-    "car_body": "#E85D3A",
-    "car_cockpit": "#374151",
-    "car_wheel": "#111827",
-    "car_rim": "#9CA3AF",
-    "ground": "#1F2937"
+    "car_body": "#E63946",
+    "car_cockpit": "#1D3557",
+    "car_head_mark": "#F4A261",
+    "car_wheel": "#22223B",
+    "car_wheel_hub": "#8D99AE",
+    "track": "#495057",
+    "track_edge": "#F8F9FA",
+    "ground": "#2B2D42",
+    "hud_text": "#FFFFFF",
+    "hud_text_dim": "#ADB5BD",
+    "hud_panel_bg": "rgba(20,24,32,0.72)",
+    "btn_throttle": "#2EC4B6",
+    "btn_brake": "#E63946",
+    "btn_steer": "#4D96FF",
+    "btn_bg": "rgba(255,255,255,0.10)",
+    "btn_border": "rgba(255,255,255,0.35)",
+    "btn_active": "rgba(255,255,255,0.90)",
+    "btn_text": "#FFFFFF",
+    "focus": "#FFD166"
   },
   "typography": {
+    "font_family": "system-ui, -apple-system, 'Segoe UI', 'PingFang SC', sans-serif",
     "base": "14px",
     "sm": "12px",
     "lg": "16px",
-    "button_label": "13px"
+    "heading": "22px",
+    "hud_label": "13px"
   },
   "spacing": {
     "xs": "4px",
@@ -28,17 +34,19 @@
     "md": "16px",
     "lg": "24px",
     "xl": "32px",
-    "button_gap": "12px",
-    "hud_margin": "20px"
+    "btn_gap": "20px",
+    "edge_margin": "24px"
   },
   "radius": {
-    "sm": "8px",
-    "md": "16px",
-    "lg": "24px",
-    "circle": "50%"
+    "sm": "6px",
+    "md": "12px",
+    "lg": "20px",
+    "full": "50%"
   },
   "shadow": {
-    "button": "0 2px 8px rgba(0,0,0,0.45)",
-    "button_pressed": "0 1px 3px rgba(0,0,0,0.55)"
+    "btn": "0 4px 14px rgba(0,0,0,0.35)",
+    "btn_pressed": "0 1px 4px rgba(0,0,0,0.5)",
+    "panel": "0 4px 16px rgba(0,0,0,0.45)",
+    "text_glow": "0 0 6px rgba(255,255,255,0.6)"
   }
 }
