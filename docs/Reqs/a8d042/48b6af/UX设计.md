@@ -5,70 +5,77 @@
 ## 交互流程图
 
 ```mermaid
-```mermaid
 stateDiagram-v2
-    [*] --> 启动页
-    启动页 --> 初始化中: 页面加载完成\n(创建渲染器/场景/相机)
-    初始化中 --> 运行中: WebGL 初始化成功\n(渲染空白场景)
-    初始化中 --> 错误状态: 初始化失败\n(WebGL 不支持/上下文创建失败)
-    运行中 --> 暂停/失焦: 页面失焦\n(主循环自动降速/暂停)
-    暂停/失焦 --> 运行中: 页面重新聚焦\n(恢复主循环)
-    运行中 --> [*]: 关闭页面
-    错误状态 --> 初始化中: 点击「重试」
-```
+    [*] --> Boot: 浏览器加载页面
+    Boot --> Initializing: main.ts 执行，创建渲染器/场景/相机
+    Initializing --> Running: WebGL 上下文创建成功且场景初始化成功
+    Initializing --> Error: WebGL 不支持 或 初始化抛异常
+    Running --> Running: requestAnimationFrame 主循环持续渲染
+    Running --> Error: 运行时渲染异常（可选监听）
+    Error --> Initializing: 点击「重试」按钮重新初始化
+    note right of Running
+        本工单为空白场景验证
+        无 HUD / 无交互玩法元素
+    end note
 ```
 
 ## 组件线框说明
 
-本工单为脚手架初始化，UI 层仅围绕渲染画布做最小可验证表面，不含 HUD 与玩法界面。主要结构：
+本工单为脚手架验证，无可玩 UI，页面仅由三个层级构成：
 
-【GameRoot 全屏容器】(单页，无路由)
-├── GameCanvasRegion 游戏画布区
-│   └── WebGLCanvas (Three.js 渲染画布，占满容器，由渲染器统一创建)
-├── LoadingOverlay 初始化遮罩 (仅初始化阶段显示)
-│   ├── LoadingSpinner 加载指示器
-│   └── StatusText 状态文案 (如「正在初始化 3D 渲染…」)
-└── ErrorOverlay 错误遮罩 (仅初始化失败时显示)
-    ├── ErrorIllustration 错误示意
-    ├── ErrorTitle 错误标题
-    ├── ErrorMessage 错误说明 (区分「WebGL 不支持」与「上下文创建失败」)
-    └── RetryButton 重试按钮
+1. 根容器 #app
+   - 占满视口（100vw × 100vh），overflow: hidden
+   - 作为渲染器 canvas 与遮罩层的定位锚点
 
-无侧栏/顶栏/底部导航；无弹窗面板（预留组件位置，后续 HUD 模块接入）。
+2. Canvas 挂载层（Three.js renderer.domElement）
+   - 由 core 层统一创建，禁止各模块自行 new
+   - 全屏铺满，随窗口 resize 自动更新 camera aspect 与 renderer size
+
+3. 状态遮罩层（覆盖在 canvas 之上）
+   - Loading 遮罩：加载中显示 spinner + 文案「正在初始化渲染管线…」
+   - Error 遮罩：WebGL 不支持或初始化失败时显示，含错误图标 + 原因说明 + 「重试」按钮
+   - Running 状态：遮罩隐藏，仅显示空白 Three.js 场景
 
 ## 交互状态定义
 
-【RetryButton 重试按钮】
-- normal: 可点击，触发重新初始化渲染器
-- hover: 悬停高亮反馈
-- active: scale 0.95 + 亮度变化
-- disabled: 连续重试间隔内锁定，opacity 0.45，cursor not-allowed，防重复触发
-- loading: 点击后进入初始化中，按钮显示 spinner，禁止重复点击
-- error: 重试再次失败后停留于错误遮罩，文案提示「仍然失败」
+本工单可交互组件极少，仅「重试」按钮与两个遮罩层：
 
-【LoadingOverlay 初始化遮罩】
-- loading: 显示 spinner + 状态文案
-- 完成: 淡出后卸载，不残留空白
+1. 重试按钮（Error 遮罩内）
+   - 正常 normal：可点击
+   - 悬停 hover：亮度/背景变化（游戏风格高对比反馈）
+   - 按下 active：scale 0.95 + 亮度变化
+   - 加载中 loading：点击后重新进入初始化，显示 spinner 并禁止重复点击
+   - 禁用 disabled：初始化进行中 opacity 0.4-0.5，cursor not-allowed
+   - 成功 success：初始化成功即隐藏遮罩，无需成功态
+   - 空 empty / 错误 error：不适用（按钮本身无数据态）
 
-【ErrorOverlay 错误遮罩】
-- error(WebGL不支持): 显示说明 + 提供「返回/了解要求」提示，不提供重试（硬件不支持重试无意义）
-- error(初始化失败): 显示说明 + RetryButton
+2. Loading 遮罩
+   - 状态：显示（初始化中）→ 隐藏（初始化成功）
+   - 不响应交互，pointer-events 按需处理
 
-【WebGLCanvas 画布】
-- normal: 渲染空白场景
-- 失焦降频: 页面隐藏时暂停/降低 rAF 帧率
+3. Error 遮罩
+   - 状态：隐藏（正常）→ 显示（WebGL 不支持 / 初始化失败）
+   - 文案区分「WebGL 不支持」与「初始化异常」两类错误
+
+4. Canvas 层
+   - 状态：初始为空白，随主循环持续渲染；resize 时自适应，无交互态
 
 ## 响应式/适配规则
 
-断点：mobile < 768px / tablet 768-1024px / desktop > 1024px。
-- 游戏画布全屏自适应，任意断点均铺满视口，不设固定宽高；resize 时由渲染器统一更新相机纵横比与画布尺寸。
-- LoadingOverlay / ErrorOverlay 内容居中，mobile 下单列纵向布局；desktop 保持居中卡片式布局（仅结构，无视觉样式）。
-- 文案：mobile 可换行缩短，desktop 完整展示。
-- 触屏 (mobile/tablet)：重试按钮命中区域 ≥ 44x44px。
+空白场景无复杂布局，核心规则为 canvas 全屏自适应：
+
+- mobile（< 768px）：canvas 占满视口，遮罩文案单行/两行居中，spinner 居中
+- tablet（768-1024px）：同上，全屏铺满
+- desktop（> 1024px）：同上，全屏铺满
+
+统一规则：
+- 窗口 resize 时实时更新 renderer.setSize 与 camera.aspect，避免拉伸变形
+- 遮罩层使用居中弹性布局，各断点无结构性差异
+- 后续接入 HUD 后需补充安全区（safe-area）与横竖屏规则，本工单暂不涉及
 
 ## UI 资产清单（初稿）
 
-- icon: retry（重试按钮图标，24px，outline 风格）
-- icon: warning（错误提示图标，24px，outline 风格）
-- illustration: error-state（初始化失败/WebGL 不支持时显示，400x300，扁平风格）
-- image: 暂无（本工单为空白场景，不引入美术资产）
+- icon: loading-spinner（加载中指示器，32px，outline 风格，旋转动画）
+- icon: error-alert（WebGL 不支持 / 初始化失败提示，48px，outline 风格）
+- illustration: 无（空白场景无列表/空数据场景，不需要插画）
+- image: 无（本工单排除所有美术资产导入）

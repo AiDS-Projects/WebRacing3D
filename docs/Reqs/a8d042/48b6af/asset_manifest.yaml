@@ -1,26 +1,19 @@
 # asset_manifest.yaml — 初始化项目脚手架与技术栈
-# 由 ArtistAgent 落地更新
-# status: sourced=命中资产库 / placeholder=占位图待替换 / manual_required=需人工提供 / not_found=未命中
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
 assets:
-  - id: warning
+  - id: asset_001
     type: icon
-    description: 错误提示图标 24px outline 风格
-    status: sourced
-    path: icons/lucide/battery-warning.svg
-    matched_name: battery-warning
-    asset_db_id: AST-000154
-    match_score: 0.7
-  - id: retry
+    description: icon: loading-spinner（加载中指示器，32px，outline 风格，旋转动画）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
     type: icon
-    description: 重试按钮图标 24px outline 风格
-    status: placeholder
-    path: docs/Reqs/a8d042/48b6af/assets/placeholder/retry.png
-    aigc_tag: [IMG_PENDING:IMG-20261117-a888ea]
-    note: AIGC 已投递，生成完成后自动回填覆盖占位图
-  - id: error_state
+    description: icon: error-alert（WebGL 不支持 / 初始化失败提示，48px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
     type: illustration
-    description: 初始化失败/WebGL 不支持错误插画 400x300 扁平风格
-    status: placeholder
-    path: docs/Reqs/a8d042/48b6af/assets/placeholder/error_state.png
-    aigc_tag: [IMG_PENDING:IMG-20261117-36fd99]
-    note: AIGC 已投递，生成完成后自动回填覆盖占位图
+    description: illustration: 无（空白场景无列表/空数据场景，不需要插画）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: photo
+    description: image: 无（本工单排除所有美术资产导入）
+    status: pending  # 待美术Agent确认来源和规格
