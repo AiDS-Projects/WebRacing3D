@@ -1,147 +1,50 @@
 # 开发笔记 — 实现玩家赛车与第三人称跟随视角
 
-> 2026-11-10 01:23 | LLM
+> 2026-11-17 19:42 | LLM
 
 ## 产出文件
-- [src/index.ts](/app#repo?file=src/index.ts) (228 chars)
-- [src/main.ts](/app#repo?file=src/main.ts) (10500 chars)
-- [src/camera/FollowCamera.ts](/app#repo?file=src/camera/FollowCamera.ts) (2757 chars)
+- [src/input/KeyboardInput.ts](/app#repo?file=src/input/KeyboardInput.ts) (6267 chars)
 
 ## 自测: 自测 7/7 通过 ✅
 
 | 检查项 | 结果 | 说明 |
 |--------|------|------|
-| 文件产出 | ✅ | 3 个文件 |
+| 文件产出 | ✅ | 1 个文件 |
 | 入口文件 | ✅ | 存在 |
 | 代码非空 | ✅ | 通过 |
 | 语法检查 | ✅ | 通过 |
 | 文件名规范 | ✅ | 全英文 |
-| 磁盘落地 | ✅ | 3 个文件已落盘 |
+| 磁盘落地 | ✅ | 1 个文件已落盘 |
 | 页面截图 | ✅ | 1 张截图 |
 
 ## 代码变更 (Diff)
 
-### src/index.ts (修改)
-```diff
---- a/src/index.ts
-+++ b/src/index.ts
-@@ -2,4 +2,6 @@
- export * from './types/scene';
-
- export * from './types/track';
-
- export * from './track/TrackBuilder';
-
--export * from './utils/math';
-+export * from './utils/math';
-
-+export * from './player/PlayerCar';
-
-+export * from './camera/FollowCamera';
+### src/input/KeyboardInput.ts (新建, 6267 chars)
 ```
-
-### src/main.ts (修改)
-```diff
---- a/src/main.ts
-+++ b/src/main.ts
-@@ -1,5 +1,4 @@
- import * as THREE from 'three';
-
--import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
- 
-
- /* ============================================================================
-
-  * 类型定义层
-
-@@ -28,6 +27,14 @@
-   width: number;
-
-   height: number;
-
-   aspect: number;
-
-+}
-
-+
-
-+/** 键盘输入状态 */
-
-+interface KeyState {
-
-+  forward: boolean;
-
-+  backward: boolean;
-
-+  left: boolean;
-
-+  right: boolean;
-
- }
-
- 
-
- /* ============================================================================
-
-@@ -44,6 +51,22 @@
-   },
-
- };
-
- 
-
-+/** 赛车物理参数 */
-
-+const CAR_CONFIG = {
-
-+  acceleration: 12,
-
-+  maxSpeed: 20,
-
-+  reverseMaxSpeed: 8,
-
-+  friction: 6,
-
-+  turnSpeed: 2.2,
-
-+};
-
-+
-
-+/** 第三人称跟随相机参数 */
-
-+const FOLLOW_CONFIG = {
-
-+  distance: 6.5,
-
-+  height: 2.8,
-
-+  lerpSpeed: 6,
-
-+};
-
-+
-
- function getSize(container: HTMLElement): SceneSize {
-
-   const width = container.clientWidth || window.innerWidth;
-
-   const height = container.clientHeight || window.innerHeight;
-
-@@ -117,6 +140,56 @@
-   return group;
-
- }
-
- 
-
-... (共 247 行变更)
++ /**
++  * KeyboardInput.ts
++  * 玩家赛车输入系统：键盘（W/S/A/D、方向键）+ 触屏虚拟按键。
++  * 每帧调用 update() 得到标准化后的 ControlInput，供赛车控制器与第三人称相机使用。
++  */
++ 
++ /** 可映射的控制动作。 */
++ export type ControlName =
++   | 'throttle'
++   | 'brake'
++   | 'steerLeft'
++   | 'steerRight'
++   | 'handbrake'
++   | 'boost'
++   | 'reset';
++ 
++ /** 每帧标准化后的输入状态。 */
++ export interface ControlInput {
++   /** 油门 0..1 */
++   throttle: number;
++ ... (更多)
 ```
-
-### src/camera/FollowCamera.ts (无变化)
 
 ## 页面预览截图
 
-![开发自测 — 实现玩家赛车与第三人称跟随视角](screenshots/dev_1794245013.png)
+![开发自测 — 实现玩家赛车与第三人称跟随视角](screenshots/dev_1794915743.png)
 
